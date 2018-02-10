@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Fastbilling</string>
+    <string name="etq_usuario">Usuario:</string>
+    <string name="etq_password">Contraseña:</string>
+    <string name="btn_login">Ingresar</string>
+    <string name="btn_administrador">Administrador</string>
+    <string name="btn_ejecutivo_terreno">Ejecutivo Terreno</string>
+    <string name="btn_conf_parametros_servidor">Configurar parametros servidor</string>
+    <string name="txt_menu_admin">Menú  Administrador</string>
+    <string name="btn_carga_parametros_iniciales">Carga de parametros iniciales</string>
+    <string name="txt_parametros_servidor">Parámetros Servidor</string>
+    <string name="txt_direccion_ip">Direccion</string>
+    <string name="txt_intervalos_actualizacion">Intervalos entre comunicación(Segundos)</string>
+    <string name="txt_btn_guardar">Guardar</string>
+    <string name="parametros_impresora">Parámetros Impresora</string>
+    <string name="btn_conf_parametros_impresora">Configurar Parámetros Impresora</string>
+    <string name="title_activity_menu_usuario">MenuUsuario</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="google_android_map_api_key">AIzaSyAlX_jxVSPfanjYFhEjath-zgloTOCj6wI</string>
+</resources>

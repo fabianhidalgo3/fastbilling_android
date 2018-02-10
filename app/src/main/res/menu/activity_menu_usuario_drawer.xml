@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_rutas"
+            android:icon="@drawable/ic_menu_asignacion"
+            android:title="Ordenes de lectura" />
+        <item
+            android:id="@+id/nav_verificacion"
+            android:icon="@drawable/ic_menu_asignacion"
+            android:title="Verificaciones" />
+        <item
+            android:id="@+id/nav_reparto"
+            android:icon="@drawable/ic_menu_facturacion"
+            android:title="Ordenes de reparto" />
+        <item
+            android:id="@+id/nav_pendientes_facturacion"
+            android:icon="@drawable/ic_menu_facturacion"
+            android:title="Pendientes de facturación" />
+        <item
+            android:id="@+id/nav_reimpresion"
+            android:icon="@drawable/ic_menu_impresora"
+            android:title="Reimpresión" />
+        <item
+            android:id="@+id/nav_mapa"
+            android:icon="@drawable/ic_menu_mapa"
+            android:title="Mapa" />
+    </group>
+
+    <!--item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Send" />
+        </menu>
+    </item-->
+
+</menu>
