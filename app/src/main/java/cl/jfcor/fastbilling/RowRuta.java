@@ -13,7 +13,7 @@ import modelos.Ruta;
 
 /**
  * Una fila de la lista de rutas
- * Created by brayan on 11/28/16.
+ * Creat
  */
 public class RowRuta extends ArrayAdapter<Ruta>
 {

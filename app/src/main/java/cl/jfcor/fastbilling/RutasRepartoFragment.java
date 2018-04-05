@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import base_datos.Bd;
+import modelos.API;
 import modelos.OrdenReparto;
 import modelos.Ruta;
 import modelos.RutaReparto;
@@ -34,10 +34,9 @@ import modelos.Usuario;
 /**
  * Fragmento donde se muestra la lista de rutas asignadas
  */
-public class RutasRepartoFragment extends Fragment implements AdapterView.OnClickListener
-{
+public class RutasRepartoFragment extends Fragment implements AdapterView.OnItemClickListener {
 
-    private String tag = "Ordenes de Reparto";
+    private String tag = "Unidades de Reparto";
     private ArrayList<RutaReparto> rutas;
     private Bd bd;
     private Usuario usuario;
@@ -55,20 +54,18 @@ public class RutasRepartoFragment extends Fragment implements AdapterView.OnClic
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
         this.lista = (ListView) this.getView().findViewById(R.id.listaRutasReparto);
         SharedPreferences prefs = this.getActivity().getSharedPreferences("cl.jfcor.fastbilling", Context.MODE_PRIVATE);
 
         //Se obtienen los datos del usuario desde la base de datos.
         this.bd.abrir();
         this.usuario = this.bd.buscarUsuario(prefs.getString("cl.jfcor.fastbilling.usuario", ""));
-
         this.rutas = new ArrayList<>();
         this.rutasAdapter = new RowRutaReparto(this.rutas, this.getActivity());
         this.lista.setAdapter(rutasAdapter);
-        Button escanear = (Button) this.getView().findViewById(R.id.escanear);
-        escanear.setOnClickListener(this);
+        this.lista.setOnItemClickListener(this);
 
+/*
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -76,12 +73,23 @@ public class RutasRepartoFragment extends Fragment implements AdapterView.OnClic
             }
         });
 
+       // Button escanear = (Button) this.getView().findViewById(R.id.escanear);
+       // escanear.setOnClickListener(this);
+        this.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                rutasAdapter.notifyDataSetChanged();
+            }
+        });
+        */
+
         //Se setea el nombre en la barra superior.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
             ((MenuUsuario) getActivity()).setActionBarTitle(this.tag);
         }
     }
+
 
     @Override
     public void onAttach(Activity activity)
@@ -145,14 +153,15 @@ public class RutasRepartoFragment extends Fragment implements AdapterView.OnClic
      * Inicia un fragmento ListaOrdenesFragment para el objeto seleccionado en la vista.
      * @param view
      */
-    @Override
+
+    /**@Override
     public void onClick(View view)
     {
         Intent intent = new Intent(view.getContext(), CaptureActivity.class);
         intent.setAction("com.google.zxing.client.android.SCAN");
         intent.putExtra("SAVE_HISTORY", false);
         startActivityForResult(intent, 0);
-    }
+    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -182,6 +191,33 @@ public class RutasRepartoFragment extends Fragment implements AdapterView.OnClic
                 //Todo: Obtener posicion gps del escaneo
             }
         }
+    }
+    /**
+     * Inicia un fragmento ListaOrdenesFragment para el objeto seleccionado en la vista.
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        Fragment fragment = null;
+        try
+        {
+            fragment = IngresarClienteFragment.class.newInstance();
+        }
+        catch (java.lang.InstantiationException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+
+        android.support.v4.app.FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit();
     }
 
 }

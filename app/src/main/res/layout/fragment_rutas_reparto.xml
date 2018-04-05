@@ -14,7 +14,7 @@
         android:id="@+id/textView5reparto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ruta" />
+        android:text="Unidad de Reparto" />
 
     <ListView
         android:id="@+id/listaRutasReparto"
@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView7reparto" />
+        android:layout_below="@+id/textView7reparto"/>
 
     <TextView
         android:id="@+id/textView7reparto"
@@ -31,8 +31,11 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:text="Cantidad de ordenes" />
+        android:layout_marginEnd="17dp"
+        android:layout_marginRight="17dp"
+        android:text="Cantidad de O.R" />
 
+    <!--
     <Button
         android:id="@+id/escanear"
         android:layout_width="wrap_content"
@@ -40,7 +43,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:text="Escanear" />
+        android:text="" />
+    -->
 
 </RelativeLayout>
 

@@ -1,0 +1,35 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="cl.jfcor.fastbilling.IngresarClienteFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:text="Ingrese número de cliente"
+        android:id="@+id/mensaje"
+        android:textSize="24sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20sp"/>
+    <EditText
+        android:id="@+id/numeroCliente"
+        android:hint="Numero de Cliente"
+        android:inputType="number"
+        android:maxLength="12"
+        android:layout_marginBottom="25sp"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"/>
+
+    <Button
+        android:id="@+id/botonContinuar"
+        android:text="Continuar"
+        android:background="@color/colorPrimary"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="mostrarCliente"/>
+</LinearLayout>

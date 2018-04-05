@@ -22,7 +22,7 @@ import modelos.Usuario;
 public class RutasFragment extends Fragment implements AdapterView.OnItemClickListener
 {
 
-    private String tag = "Ordenes de lectura";
+    private String tag = "Unidades de lectura";
     private ArrayList<Ruta> rutas;
     private Bd bd;
     private Usuario usuario;

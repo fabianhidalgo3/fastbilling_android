@@ -20,7 +20,7 @@
         android:text="@string/parametros_impresora"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="@color/colorPrimary"
-        android:textSize="34sp" />
+        android:textSize="28sp" />
 
     <TextView
         android:id="@+id/textView21"

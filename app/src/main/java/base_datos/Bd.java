@@ -88,6 +88,11 @@ public class Bd extends SQLiteOpenHelper
                        "nombre STRING," +
                        "usuario INTEGER)";
 
+        String tipo_aparato = "CREATE TABLE tipo_aparatos("+
+                _ID+" INTEGER PRIMARY KEY,"+
+                "nombre STRING,"+
+                "descripcion STRING" + ")";
+        
         String ordenLectura = "CREATE TABLE ordenlectura(" +
                                _ID+" INTEGER PRIMARY KEY," +
                                "codigo INTEGER," +
@@ -2525,7 +2530,7 @@ public class Bd extends SQLiteOpenHelper
         //Ordenes leidas sin enviar deben estar en estado_lectura_id = 4.
         String[] args = new String[] {"4"};
 
-        Cursor c = this.getReadableDatabase().query("ordenlectura", filas, "estado_lectura_id=?", args, null, null, null);
+        Cursor c = this.getReadableDatabase().query("ordenreparto", filas, "estado_reparto_id=?", args, null, null, null);
 
         int id = c.getColumnIndex(_ID);
         int numeroInterno = c.getColumnIndex("numero_interno");

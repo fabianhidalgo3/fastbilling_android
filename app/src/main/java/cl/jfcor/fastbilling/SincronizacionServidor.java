@@ -50,7 +50,7 @@ public class SincronizacionServidor extends AsyncTask<String, Void, Void>
             {
                 while (true)
                 {
-                    Log.d("carga masiva", "asdf");
+                    Log.d("carga masiva", "Sincronizando con API");
                     try
                     {
                         Thread.sleep(10000);
@@ -61,6 +61,8 @@ public class SincronizacionServidor extends AsyncTask<String, Void, Void>
 
                     API carga = new API(context);
                     carga.cargaAsignacionesReparto(usuario.getEmail());
+                    //Se envian Repartos al Sevidor
+                    carga.actualizaEntregas(usuario.getEmail ());
 
                     //Se consulta por desasignaciones
                     carga.cargaDesasignaciones(usuario.getEmail());
