@@ -83,40 +83,35 @@ public class IngresarClienteFragment extends Fragment implements AdapterView.OnC
         String nCliente = numeroCliente.getText().toString ();
 
         if (nCliente != null) {
-            Toast.makeText (this.getContext (), "Cliente: " + nCliente, Toast.LENGTH_LONG).show ();
+            this.bd.abrir ();
+            //Todo: buscar orden de reparto por numero de cliente
+            OrdenReparto orden = this.bd.buscarOrdenReparto (nCliente);
+
+            if (orden != null) {
+                //Obtiene posicion gps al momento de guardar lectura
+                String locationProvider = LocationManager.NETWORK_PROVIDER;
+                LocationManager location = (LocationManager) this.getActivity ().getSystemService (Context.LOCATION_SERVICE);
+                Location lastKnownLocation = location.getLastKnownLocation (locationProvider);
+                orden.setGpsLatitud (lastKnownLocation.getLatitude ());
+                orden.setGpsLongitud (lastKnownLocation.getLongitude ());
+                orden.setEstado (4);
+                orden.setFechaEntrega (new Date ().getTime ());
+                this.bd.actualizaOrdenReparto (orden);
+
+                Fragment fragment = null;
+                try {
+                    fragment = RutasRepartoFragment.class.newInstance ();
+                } catch (java.lang.InstantiationException e) {
+                    e.printStackTrace ();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace ();
+                }
+                android.support.v4.app.FragmentManager fragmentManager = this.getActivity ().getSupportFragmentManager ();
+                fragmentManager.beginTransaction ().replace (R.id.flContent, fragment).addToBackStack (null).commit ();
+            } else {
+                Toast.makeText (this.getContext (), "Cliente no registra en ruta", Toast.LENGTH_LONG).show ();
+            }
         }
-
-        this.bd.abrir();
-        //Todo: buscar orden de reparto por numero de cliente
-        OrdenReparto orden = this.bd.buscarOrdenReparto(nCliente);
-        Toast.makeText(this.getContext(),"Orden Reparto: " + orden, Toast.LENGTH_LONG).show();
-
-         if(orden != null) {
-         //Obtiene posicion gps al momento de guardar lectura
-             String locationProvider = LocationManager.NETWORK_PROVIDER;
-         LocationManager location = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
-         Location lastKnownLocation = location.getLastKnownLocation(locationProvider);
-         orden.setGpsLatitud(lastKnownLocation.getLatitude());
-         orden.setGpsLongitud(lastKnownLocation.getLongitude());
-         orden.setEstado(4);
-         orden.setFechaEntrega(new Date().getTime());
-         this.bd.actualizaOrdenReparto(orden);
-
-             Fragment fragment = null;
-         try {
-             fragment = RutasRepartoFragment.class.newInstance();
-         } catch (java.lang.InstantiationException e) {
-             e.printStackTrace ();
-         } catch (IllegalAccessException e) {
-             e.printStackTrace ();
-         }
-         android.support.v4.app.FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
-         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit();
-         }
-         else{
-         Toast.makeText(this.getContext(), "Cliente no registra en ruta", Toast.LENGTH_LONG).show();
-         }
-
     }
 
     @Override
