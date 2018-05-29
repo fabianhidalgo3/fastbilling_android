@@ -2,9 +2,6 @@ package modelos;
 
 import java.io.Serializable;
 
-/**
- * Created by brayan on 02-11-17.
- */
 
 public class EstadoReparto implements Serializable
 {

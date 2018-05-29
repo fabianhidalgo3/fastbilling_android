@@ -23,9 +23,9 @@ public class DetalleOrdenLectura implements Serializable
     private long fechaEjecucion;
     private int claveLecturaId;
     private int observacionId;
-    private int claveLecturaAnteriorId;
-    private int claveLecturaAnteriorId2;
-    private int claveLecturaAnteriorId3;
+    private String claveLecturaAnterior;
+    private String claveLecturaAnterior2;
+    private String claveLecturaAnterior3;
     private double m3Acumulados;
 	private ArrayList<Intento> listaIntentos;
     private int intentos = 0;
@@ -35,7 +35,8 @@ public class DetalleOrdenLectura implements Serializable
 	public DetalleOrdenLectura(int id, int ordenLecturaId, int numeradorId, double lecturaAnterior,
 							   double lecturaPromedio, double lecturaActual, double rangoSuperior,
 							   double rangoInferior, long fechaEjecucion, int claveLecturaId, int observacionId,
-							   int claveLecturaAnteriorId, int claveLecturaAnteriorId2, int claveLecturaAnteriorId3, double m3Acumulados, ArrayList<Intento> intentos,
+							   String claveLecturaAnterior, String claveLecturaAnterior2, String claveLecturaAnterior3,
+                               double m3Acumulados, ArrayList<Intento> intentos,
 							   ArrayList<Fotografia> fotografias)
 	{
 		this.id = id;
@@ -49,9 +50,9 @@ public class DetalleOrdenLectura implements Serializable
 		this.fechaEjecucion = fechaEjecucion;
 		this.claveLecturaId = claveLecturaId;
 		this.observacionId = observacionId;
-        this.claveLecturaAnteriorId2 = claveLecturaAnteriorId2;
-        this.claveLecturaAnteriorId3 = claveLecturaAnteriorId3;
-		this.claveLecturaAnteriorId = claveLecturaAnteriorId;
+        this.claveLecturaAnterior2 = claveLecturaAnterior2;
+        this.claveLecturaAnterior3 = claveLecturaAnterior3;
+		this.claveLecturaAnterior = claveLecturaAnterior;
 		this.m3Acumulados = m3Acumulados;
 		this.listaIntentos = intentos;
 		this.fotografias = fotografias;
@@ -59,7 +60,7 @@ public class DetalleOrdenLectura implements Serializable
 
     public DetalleOrdenLectura(int id, int ordenLecturaId, int numeradorId, double lecturaAnterior,
                                double lecturaPromedio, double rangoSuperior, double rangoInferior,
-                               int claveLecturaAnteriorId, int claveLecturaAnteriorId2, int claveLecturaAnteriorId3,
+                               String claveLecturaAnterior, String claveLecturaAnterior2, String claveLecturaAnterior3,
                                double m3Acumulados) {
         this.id = id;
         this.ordenLecturaId = ordenLecturaId;
@@ -68,9 +69,9 @@ public class DetalleOrdenLectura implements Serializable
         this.lecturaPromedio = lecturaPromedio;
         this.rangoSuperior = rangoSuperior;
         this.rangoInferior = rangoInferior;
-        this.claveLecturaAnteriorId = claveLecturaAnteriorId;
-        this.claveLecturaAnteriorId2 = claveLecturaAnteriorId2;
-        this.claveLecturaAnteriorId3 = claveLecturaAnteriorId3;
+        this.claveLecturaAnterior = claveLecturaAnterior;
+        this.claveLecturaAnterior2 = claveLecturaAnterior2;
+        this.claveLecturaAnterior3 = claveLecturaAnterior3;
         this.m3Acumulados = m3Acumulados;
     }
 
@@ -80,6 +81,30 @@ public class DetalleOrdenLectura implements Serializable
 		String fecha = dateFormatter.format(this.fechaEjecucion);
 		return fecha;
 	}
+
+    public String getClaveLecturaAnterior() {
+        return claveLecturaAnterior;
+    }
+
+    public void setClaveLecturaAnterior(String claveLecturaAnterior) {
+        this.claveLecturaAnterior = claveLecturaAnterior;
+    }
+
+    public String getClaveLecturaAnterior2() {
+        return claveLecturaAnterior2;
+    }
+
+    public void setClaveLecturaAnterior2(String claveLecturaAnterior2) {
+        this.claveLecturaAnterior2 = claveLecturaAnterior2;
+    }
+
+    public String getClaveLecturaAnterior3() {
+        return claveLecturaAnterior3;
+    }
+
+    public void setClaveLecturaAnterior3(String claveLecturaAnterior3) {
+        this.claveLecturaAnterior3 = claveLecturaAnterior3;
+    }
 
     public int getId() {
         return id;
@@ -161,14 +186,6 @@ public class DetalleOrdenLectura implements Serializable
         this.observacionId = observacionId;
     }
 
-    public int getClaveLecturaAnteriorId() {
-        return claveLecturaAnteriorId;
-    }
-
-    public void setClaveLecturaAnteriorId(int claveLecturaAnteriorId) {
-        this.claveLecturaAnteriorId = claveLecturaAnteriorId;
-    }
-
     public double getM3Acumulados() {
         return m3Acumulados;
     }
@@ -248,21 +265,7 @@ public class DetalleOrdenLectura implements Serializable
 		this.fotografias = fotografias;
 	}
 
-    public int getClaveLecturaAnteriorId2() {
-        return claveLecturaAnteriorId2;
-    }
 
-    public void setClaveLecturaAnteriorId2(int claveLecturaAnteriorId2) {
-        this.claveLecturaAnteriorId2 = claveLecturaAnteriorId2;
-    }
-
-    public int getClaveLecturaAnteriorId3() {
-        return claveLecturaAnteriorId3;
-    }
-
-    public void setClaveLecturaAnteriorId3(int claveLecturaAnteriorId3) {
-        this.claveLecturaAnteriorId3 = claveLecturaAnteriorId3;
-    }
 
     public String getMensajeFueraDeRango() {
         return mensajeFueraDeRango;

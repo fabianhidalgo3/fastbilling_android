@@ -1,5 +1,6 @@
 package cl.jfcor.fastbilling;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,11 +16,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Date;
 import base_datos.Bd;
@@ -42,6 +46,12 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
     private OrdenLectura ordenLectura;
     private int numerador = 0;
     private Bd bd;
+    private static boolean disponiblepGPS, disponibleRED;
+    private static LocationManager locManager;
+    private static String provider;
+    private static final String TAG = "Clientes Pendientes";
+    private static int contador;
+
 
     //TODO: Mover funciones de impresion a otra vista.
     //TODO: Revisar intent result en fragment.
@@ -50,13 +60,18 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.activity_orden_lectura, container, false);
+
     }
 
 	@Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
+        contador =0;
+        System.out.println (contador);
+
 
         //Obtener argumentos
         Bundle args = getArguments();
@@ -73,7 +88,9 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
         TextView txtNomCliente = (TextView) this.getActivity().findViewById(R.id.ordenLectura_nomCliente);
         TextView txtdireccion = (TextView) this.getActivity().findViewById(R.id.ordenLectura_direccion);
         TextView txtNumMedidor = (TextView) this.getActivity().findViewById(R.id.ordenLectura_numMedidor);
-        TextView txtNumInstalacion = (TextView) this.getActivity().findViewById(R.id.ordenLectura_numInstalacion);
+        TextView txtNotaLectura = (TextView) this.getActivity().findViewById(R.id.ordenLectura_notaLectura);
+        TextView txtNumerador = (TextView) this.getActivity().findViewById(R.id.ordenLectura_numerador);
+        TextView txtTipoCliente = (TextView) this.getActivity().findViewById(R.id.ordenLectura_tipoCliente);
 
         this.txtLectura = (EditText) this.getActivity().findViewById(R.id.ordenLectura_lectura);
         Button grabar = (Button) this.getActivity().findViewById(R.id.ordenLectura_grabar);
@@ -86,22 +103,23 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
         if (medidor != null)
             txtNumMedidor.setText(medidor.getNumeroMedidor());
 
-        txtNumInstalacion.setText(instalacion.getCodigo());
+       // txtNumInstalacion.setText(instalacion.getCodigo());
 
         ArrayList<ClaveLectura> claves = this.bd.leerClaves();
+
         for(int i = 0; i < claves.size(); i++)
         {
             Log.d("clave", claves.get(i).getClave());
         }
-        this.claves = (Spinner) this.getActivity().findViewById(R.id.spinner_claves);
-        this.claves.setAdapter(new SpinAdapterClaves(this.getContext(), android.R.layout.simple_spinner_item, claves));
-        this.claves.setOnItemSelectedListener(this);
 
+        this.claves = (Spinner) this.getActivity().findViewById(R.id.spinner_claves);
+        this.claves.setAdapter(new SpinAdapterClaves(this.getContext (), android.R.layout.simple_spinner_dropdown_item, claves));
+        this.claves.setOnItemSelectedListener(this);
         ClaveLectura clave = (ClaveLectura) this.claves.getSelectedItem();
 
         this.observaciones = (Spinner) this.getActivity().findViewById(R.id.spinner_observaciones);
         this.observaciones.setAdapter(new SpinAdapterObservaciones(this.getContext(), android.R.layout.simple_spinner_item, clave.getObservaciones()));
-        //this.observaciones.setVisibility();
+
 
     }
 
@@ -111,12 +129,12 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
         this.bd = Bd.getInstance(activity);
     }
 
-    @Override
+   @Override
     public void onClick(View view)
     {
         final ClaveLectura clave = (ClaveLectura) this.claves.getSelectedItem();
         final Observacion observacion = (Observacion) this.observaciones.getSelectedItem();
-
+        System.out.println (this.txtLectura.getText().toString());
         //Se valida ingreso de observacion
         if(this.validarObservacion(observacion))
         {
@@ -141,6 +159,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
                         guardarLectura(0.0, clave, observacion);
                         //Guardar lectura
                         //Tomar fotografias si corresponde
+
                         getActivity().finish();
                     }
                 });
@@ -157,6 +176,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
                 //Proceso normal de toma de lectura
                 if(validarLectura(this.txtLectura.getText().toString(), clave))
                 {
+                    System.out.println (clave);
                     //Se valida que se ingreso lectura para claves en que esta es requerida
                     //Se obtiene lectura ingresada
                     //En caso de que la casilla este vacia se setea lectura = 0.0
@@ -286,7 +306,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
         //Obtiene posicion gps al momento de guardar lectura
         String locationProvider = LocationManager.NETWORK_PROVIDER;
         LocationManager location = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
-        Location lastKnownLocation = location.getLastKnownLocation(locationProvider);
+        @SuppressLint("MissingPermission") Location lastKnownLocation = location.getLastKnownLocation(locationProvider);
         this.ordenLectura.setGpsLatitud(lastKnownLocation.getLatitude());
         this.ordenLectura.setGpsLongitud(lastKnownLocation.getLongitude());
 
@@ -391,10 +411,19 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-    {
-        ClaveLectura clave = (ClaveLectura) parent.getSelectedItem();
-        this.observaciones.setAdapter(new SpinAdapterObservaciones(this.getContext(), android.R.layout.simple_spinner_item, clave.getObservaciones()));
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        System.out.println (contador);
+
+        if(contador ==0){
+            contador ++;
+        }
+        else {
+            ClaveLectura clave = (ClaveLectura) parent.getSelectedItem ();
+            this.observaciones.setAdapter (new SpinAdapterObservaciones (this.getContext (), android.R.layout.simple_spinner_item, clave.getObservaciones ()));
+            this.observaciones.performClick ();
+        }
+        System.out.println (contador);
+
     }
 
     @Override

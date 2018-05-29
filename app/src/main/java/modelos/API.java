@@ -559,16 +559,16 @@ public class API
                                                                               jsonDetalleOrden.getJSONObject(i).getDouble("lectura_promedio"),
                                                                               jsonDetalleOrden.getJSONObject(i).getDouble("rango_superior"),
                                                                               jsonDetalleOrden.getJSONObject(i).getDouble("rango_inferior"),
-                                                                              jsonDetalleOrden.getJSONObject(i).getInt("clave_lectura_anterior_id"),
-                                                                              jsonDetalleOrden.getJSONObject(i).getInt("clave_lectura_anterior_2"),
-                                                                              jsonDetalleOrden.getJSONObject(i).getInt("clave_lectura_anterior_3"),
+                                                                              jsonDetalleOrden.getJSONObject(i).getString ("clave_lectura_anterior"),
+                                                                              jsonDetalleOrden.getJSONObject(i).getString ("clave_lectura_anterior_2"),
+                                                                              jsonDetalleOrden.getJSONObject(i).getString ("clave_lectura_anterior_3"),
                                                                               jsonDetalleOrden.getJSONObject(i).getDouble("m3_acumulados"));
                         detalleOrden.add(detalle);
                     }
 
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
 
-                    OrdenLectura orden = new OrdenLectura(jsonOrden.getInt("id"), jsonOrden.getInt("codigo"), jsonOrden.getInt("posicion"),
+                    OrdenLectura orden = new OrdenLectura(jsonOrden.getInt("id"), jsonOrden.getInt("codigo"), jsonOrden.getInt("secuencia_lector"),
                                                           jsonOrden.getString("direccion"), jsonOrden.getString("direccion_entrega"), jsonOrden.getString("numero_poste"),
                                                           sdf.parse(jsonOrden.getString("fecha_carga")).getTime(), sdf.parse(jsonOrden.getString("fecha_propuesta")).getTime(),
                                                           sdf.parse(jsonOrden.getString("fecha_asignacion")).getTime(), jsonOrden.getDouble("ajuste_sencillo_anterior"),

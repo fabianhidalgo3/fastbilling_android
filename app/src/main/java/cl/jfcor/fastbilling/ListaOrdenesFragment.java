@@ -56,6 +56,7 @@ public class ListaOrdenesFragment extends Fragment implements AdapterView.OnItem
 
         ArrayAdapter<String> adapter;
         adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, arraySpinner);
+        adapter.setDropDownViewResource (android.R.layout.simple_spinner_item);
         this.filtro.setAdapter(adapter);
 
         this.buscar = (EditText) this.getView().findViewById(R.id.txt_busquedaImpresion);

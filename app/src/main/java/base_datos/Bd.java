@@ -136,9 +136,9 @@ public class Bd extends SQLiteOpenHelper
                                       "fecha_ejecucion TEXT," +
                                       "clave_lectura_id INTEGER," +
                                       "observacion_id INTEGER," +
-                                      "clave_lectura_anterior_id INTEGER," +
-                                      "clave_lectura_anterior_id2 INTEGER," +
-                                       "clave_lectura_anterior_id3 INTEGER," +
+                                      "clave_lectura_anterior TEXT," +
+                                      "clave_lectura_anterior_2 TEXT," +
+                                       "clave_lectura_anterior_3 TEXT," +
                                       "m3_acumulados REAL)";
 
         String claveLectura = "CREATE TABLE clavelectura(" +
@@ -356,7 +356,7 @@ public class Bd extends SQLiteOpenHelper
         db.execSQL(rutaReparto);
 
         //Insersion de usuario por defecto en la bd.
-        db.execSQL("INSERT INTO usuarios (" + _ID + ", email, password, token, perfil_id) values(1,'fastbilling','12345678','',1)");
+        db.execSQL("INSERT INTO usuarios (" + _ID + ", email, password, token, perfil_id) values(1,'admin','admin','',1)");
         db.execSQL("INSERT INTO parametrosimpresora(" + _ID + ", mac, flag_facturacion) values(1, '', 0)");
     }
 
@@ -1660,8 +1660,8 @@ public class Bd extends SQLiteOpenHelper
             valores.put("rango_inferior", detalle.getRangoInferior());
             valores.put("fecha_ejecucion", detalle.getFechaEjecucion());
             valores.put("clave_lectura_id", detalle.getClaveLecturaId());
-            valores.put("observacion_id", detalle.getOrdenLecturaId());
-            valores.put("clave_lectura_anterior_id", detalle.getClaveLecturaAnteriorId());
+            valores.put("observacion_id", detalle.getObservacionId());
+            valores.put("clave_lectura_anterior", detalle.getClaveLecturaAnterior());
             valores.put("m3_acumulados", detalle.getM3Acumulados());
 
             this.getWritableDatabase().insert("detalleordenlectura", null, valores);
@@ -1696,9 +1696,8 @@ public class Bd extends SQLiteOpenHelper
 
         String filas[] = {_ID, "orden_lectura_id", "numerador_id", "lectura_anterior", "lectura_promedio",
                           "lectura_actual", "rango_superior", "rango_inferior", "fecha_ejecucion",
-                          "clave_lectura_id","observacion_id", "clave_lectura_anterior_id", "observacion_id",
-                          "clave_lectura_anterior_id", "clave_lectura_anterior_id2",
-                          "clave_lectura_anterior_id3",  "m3_acumulados"};
+                          "clave_lectura_id","observacion_id", "clave_lectura_anterior",
+                           "clave_lectura_anterior_2", "clave_lectura_anterior_3",  "m3_acumulados"};
 
         String[] args = new String[] {Integer.toString(ordenId)};
 
@@ -1715,9 +1714,9 @@ public class Bd extends SQLiteOpenHelper
         int fechaEjecucion = c.getColumnIndex("fecha_ejecucion");
         int claveLecturaId = c.getColumnIndex("clave_lectura_id");
         int observacionId = c.getColumnIndex("observacion_id");
-        int claveLecturaAnteriorId = c.getColumnIndex("clave_lectura_anterior_id");
-        int claveLecturaAnteriorId2 = c.getColumnIndex("clave_lectura_anterior_id2");
-        int claveLecturaAnteriorId3 = c.getColumnIndex("clave_lectura_anterior_id3");
+        int claveLecturaAnteriorId = c.getColumnIndex("clave_lectura_anterior");
+        int claveLecturaAnteriorId2 = c.getColumnIndex("clave_lectura_anterior_2");
+        int claveLecturaAnteriorId3 = c.getColumnIndex("clave_lectura_anterior_3");
         int m3Acumulados = c.getColumnIndex("m3_acumulados");
 
         while(c.moveToNext())
@@ -1727,8 +1726,8 @@ public class Bd extends SQLiteOpenHelper
                                                   c.getDouble(lecturaActual), c.getDouble(rangoSuperior),
                                                   c.getDouble(rangoInferior), c.getLong(fechaEjecucion),
                                                   c.getInt(claveLecturaId), c.getInt(observacionId),
-                                                  c.getInt(claveLecturaAnteriorId), c.getInt(claveLecturaAnteriorId2),
-                                                  c.getInt(claveLecturaAnteriorId3),  c.getDouble(m3Acumulados),
+                                                  c.getString (claveLecturaAnteriorId), c.getString (claveLecturaAnteriorId2),
+                                                  c.getString (claveLecturaAnteriorId3),  c.getDouble(m3Acumulados),
                                                   this.verIntentos(c.getInt(id)), this.verFotografias(c.getInt(id))));
         }
 
@@ -1756,7 +1755,6 @@ public class Bd extends SQLiteOpenHelper
         valores.put("fecha_ejecucion", detalle.getFechaEjecucion());
         valores.put("clave_lectura_id", detalle.getClaveLecturaId());
         valores.put("observacion_id", detalle.getObservacionId());
-
         this.getWritableDatabase().update("detalleordenlectura", valores, _ID + "=" + detalle.getId(), null);
     }
 
@@ -1808,7 +1806,6 @@ public class Bd extends SQLiteOpenHelper
         int lecturaRequerida = c.getColumnIndex("lectura_requerida");
 
         boolean requerida = false;
-
         while(c.moveToNext())
         {
             if(c.getInt(lecturaRequerida) == 1)
@@ -1859,7 +1856,7 @@ public class Bd extends SQLiteOpenHelper
      *
      * @return the array list
      */
-    private ArrayList<Observacion> leerObservaciones(int idBusqueda)
+    public ArrayList<Observacion> leerObservaciones(int idBusqueda)
     {
         ArrayList<Observacion> resultado = new ArrayList<>();
 
@@ -1871,7 +1868,6 @@ public class Bd extends SQLiteOpenHelper
         int descripcion = c.getColumnIndex("descripcion");
         int clave_lectura = c.getColumnIndex("clave_lectura_id");
 
-        resultado.add(new Observacion(0, "-- Seleccione Observación --", idBusqueda));
         while(c.moveToNext())
         {
             resultado.add(new Observacion(c.getInt(id),c.getString(descripcion), c.getInt(clave_lectura)));

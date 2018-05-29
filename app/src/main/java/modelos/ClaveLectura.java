@@ -120,4 +120,9 @@ public class ClaveLectura implements Serializable
     {
         this.observaciones = observaciones;
     }
+
+    @Override
+    public String toString() {
+        return codigo;
+    }
 }
