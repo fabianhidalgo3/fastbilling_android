@@ -1754,6 +1754,7 @@ public class Bd extends SQLiteOpenHelper
         valores.put("lectura_actual", detalle.getLecturaActual());
         valores.put("fecha_ejecucion", detalle.getFechaEjecucion());
         valores.put("clave_lectura_id", detalle.getClaveLecturaId());
+        System.out.println ("Observacion BD: " + detalle.getObservacionId ());
         valores.put("observacion_id", detalle.getObservacionId());
         this.getWritableDatabase().update("detalleordenlectura", valores, _ID + "=" + detalle.getId(), null);
     }
@@ -1806,6 +1807,7 @@ public class Bd extends SQLiteOpenHelper
         int lecturaRequerida = c.getColumnIndex("lectura_requerida");
 
         boolean requerida = false;
+
         while(c.moveToNext())
         {
             if(c.getInt(lecturaRequerida) == 1)
@@ -1856,7 +1858,7 @@ public class Bd extends SQLiteOpenHelper
      *
      * @return the array list
      */
-    public ArrayList<Observacion> leerObservaciones(int idBusqueda)
+    private ArrayList<Observacion> leerObservaciones(int idBusqueda)
     {
         ArrayList<Observacion> resultado = new ArrayList<>();
 
@@ -1868,6 +1870,7 @@ public class Bd extends SQLiteOpenHelper
         int descripcion = c.getColumnIndex("descripcion");
         int clave_lectura = c.getColumnIndex("clave_lectura_id");
 
+        //resultado.add(new Observacion(0, "-- Seleccione Observación --", idBusqueda));
         while(c.moveToNext())
         {
             resultado.add(new Observacion(c.getInt(id),c.getString(descripcion), c.getInt(clave_lectura)));

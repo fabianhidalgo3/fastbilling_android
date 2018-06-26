@@ -212,7 +212,6 @@ public class DetalleOrdenLectura implements Serializable
 		if(!clave.isLecturaRequerida())
 		    return false;
 
-
         //Verifica cuantas veces se ha ingresado la misma lectura
         if( this.lecturaActual == lectura)
             this.intentos++;
@@ -223,11 +222,13 @@ public class DetalleOrdenLectura implements Serializable
         }
 	
 		//Verifica cantidad de veces que se repite la misma lectura para considerarla valida
-		if( this.intentos == 2)
-			return false;
+		if( this.intentos == 2){
+            return false;
+        }
+
 
         //Verifica si lectura actual es menor a lectura anterior
-        if(this.lecturaActual < this.lecturaAnterior) {
+        if(this.lecturaActual < this.rangoInferior) {
             this.setMensajeFueraDeRango("Lectura ingresada se encuentra bajo el consumo normal");
             return true;
         }

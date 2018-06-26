@@ -36,8 +36,7 @@ import modelos.Observacion;
 import modelos.OrdenLectura;
 import modelos.ParametrosImpresora;
 
-public class OrdenLecturaFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener
-{
+public class OrdenLecturaFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     public final static int CAMARA = 1;
     public final static int FACTURA = 2;
     private EditText txtLectura;
@@ -51,6 +50,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
     private static String provider;
     private static final String TAG = "Clientes Pendientes";
     private static int contador;
+    public static boolean fueraRango;
 
 
     //TODO: Mover funciones de impresion a otra vista.
@@ -61,80 +61,75 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.activity_orden_lectura, container, false);
+        return inflater.inflate (R.layout.activity_orden_lectura, container, false);
 
     }
 
-	@Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        contador =0;
-        System.out.println (contador);
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated (savedInstanceState);
 
 
         //Obtener argumentos
-        Bundle args = getArguments();
-        this.ordenLectura = (OrdenLectura) args.getSerializable("orden");
-        String ruta = args.getString("ruta");
+        Bundle args = getArguments ();
+        this.ordenLectura = (OrdenLectura) args.getSerializable ("orden");
+        String ruta = args.getString ("ruta");
 
-        this.bd.abrir();
-        Cliente cliente = this.bd.buscarCliente(this.ordenLectura.getClienteId());
-        Medidor medidor = this.bd.buscarMedidor(this.ordenLectura.getMedidorId());
-        Instalacion instalacion = this.bd.buscarInstalacion(this.ordenLectura.getInstalacionId());
+        this.bd.abrir ();
+        Cliente cliente = this.bd.buscarCliente (this.ordenLectura.getClienteId ());
+        Medidor medidor = this.bd.buscarMedidor (this.ordenLectura.getMedidorId ());
+        Instalacion instalacion = this.bd.buscarInstalacion (this.ordenLectura.getInstalacionId ());
 
-        TextView txtRuta = (TextView) this.getActivity().findViewById(R.id.ordenLectura_ruta);
-        TextView txtNumCliente = (TextView) this.getActivity().findViewById(R.id.ordenLectura_numCliente);
-        TextView txtNomCliente = (TextView) this.getActivity().findViewById(R.id.ordenLectura_nomCliente);
-        TextView txtdireccion = (TextView) this.getActivity().findViewById(R.id.ordenLectura_direccion);
-        TextView txtNumMedidor = (TextView) this.getActivity().findViewById(R.id.ordenLectura_numMedidor);
-        TextView txtNotaLectura = (TextView) this.getActivity().findViewById(R.id.ordenLectura_notaLectura);
-        TextView txtNumerador = (TextView) this.getActivity().findViewById(R.id.ordenLectura_numerador);
-        TextView txtTipoCliente = (TextView) this.getActivity().findViewById(R.id.ordenLectura_tipoCliente);
+        TextView txtRuta = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_ruta);
+        TextView txtNumCliente = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_numCliente);
+        TextView txtNomCliente = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_nomCliente);
+        TextView txtdireccion = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_direccion);
+        TextView txtNumMedidor = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_numMedidor);
+        TextView txtNotaLectura = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_notaLectura);
+        TextView txtNumerador = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_numerador);
+        TextView txtTipoCliente = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_tipoCliente);
 
-        this.txtLectura = (EditText) this.getActivity().findViewById(R.id.ordenLectura_lectura);
-        Button grabar = (Button) this.getActivity().findViewById(R.id.ordenLectura_grabar);
-        grabar.setOnClickListener(this);
+        this.txtLectura = (EditText) this.getActivity ().findViewById (R.id.ordenLectura_lectura);
+        Button grabar = (Button) this.getActivity ().findViewById (R.id.ordenLectura_grabar);
+        grabar.setOnClickListener (this);
 
-        txtRuta.setText(ruta);
-        txtNumCliente.setText(cliente.getNumero_cliente());
-        txtNomCliente.setText(cliente.getNombreCompleto());
-        txtdireccion.setText(cliente.getDireccion());
+        txtRuta.setText (ruta);
+        txtNumCliente.setText (cliente.getNumero_cliente ());
+        txtNomCliente.setText (cliente.getNombreCompleto ());
+        txtdireccion.setText (cliente.getDireccion ());
         if (medidor != null)
-            txtNumMedidor.setText(medidor.getNumeroMedidor());
+            txtNumMedidor.setText (medidor.getNumeroMedidor ());
 
-       // txtNumInstalacion.setText(instalacion.getCodigo());
+        // txtNumInstalacion.setText(instalacion.getCodigo());
 
-        ArrayList<ClaveLectura> claves = this.bd.leerClaves();
+        ArrayList<ClaveLectura> claves = this.bd.leerClaves ();
 
-        for(int i = 0; i < claves.size(); i++)
-        {
-            Log.d("clave", claves.get(i).getClave());
+        for (int i = 0; i < claves.size (); i++) {
+            Log.d ("clave", claves.get (i).getClave ());
         }
 
-        this.claves = (Spinner) this.getActivity().findViewById(R.id.spinner_claves);
-        this.claves.setAdapter(new SpinAdapterClaves(this.getContext (), android.R.layout.simple_spinner_dropdown_item, claves));
-        this.claves.setOnItemSelectedListener(this);
-        ClaveLectura clave = (ClaveLectura) this.claves.getSelectedItem();
+        this.claves = (Spinner) this.getActivity ().findViewById (R.id.spinner_claves);
+        this.claves.setAdapter (new SpinAdapterClaves (this.getContext (), android.R.layout.simple_spinner_dropdown_item, claves));
+        this.claves.setOnItemSelectedListener (this);
+        ClaveLectura clave = (ClaveLectura) this.claves.getSelectedItem ();
 
-        this.observaciones = (Spinner) this.getActivity().findViewById(R.id.spinner_observaciones);
-        this.observaciones.setAdapter(new SpinAdapterObservaciones(this.getContext(), android.R.layout.simple_spinner_item, clave.getObservaciones()));
-
+        this.observaciones = (Spinner) this.getActivity ().findViewById (R.id.spinner_observaciones);
+        this.observaciones.setAdapter (new SpinAdapterObservaciones (this.getContext (), android.R.layout.simple_spinner_dropdown_item, clave.getObservaciones ()));
+        contador = 0;
 
     }
 
     @Override
     public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.bd = Bd.getInstance(activity);
+        super.onAttach (activity);
+        this.bd = Bd.getInstance (activity);
     }
 
-   @Override
-    public void onClick(View view)
-    {
+    @Override
+    public void onClick(View view) {
         final ClaveLectura clave = (ClaveLectura) this.claves.getSelectedItem();
         final Observacion observacion = (Observacion) this.observaciones.getSelectedItem();
-        System.out.println (this.txtLectura.getText().toString());
+
         //Se valida ingreso de observacion
         if(this.validarObservacion(observacion))
         {
@@ -159,8 +154,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
                         guardarLectura(0.0, clave, observacion);
                         //Guardar lectura
                         //Tomar fotografias si corresponde
-
-                        getActivity().finish();
+                        //getActivity().finish();
                     }
                 });
                 builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -174,9 +168,8 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
             else
             {
                 //Proceso normal de toma de lectura
-                if(validarLectura(this.txtLectura.getText().toString(), clave))
+                if(clave.getId () != 0)
                 {
-                    System.out.println (clave);
                     //Se valida que se ingreso lectura para claves en que esta es requerida
                     //Se obtiene lectura ingresada
                     //En caso de que la casilla este vacia se setea lectura = 0.0
@@ -218,7 +211,6 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
                         AlertDialog alerta = dialogo.create();
                         alerta.show();
                     }
-
                 }
                 else
                 {
@@ -259,26 +251,25 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
 
     /**
      * Valida si observacion ingresada corresponde a una de casa cerrada.
+     *
      * @param observacion Observacion seleccionada en spinner de observaciones
      * @return boolean
      */
-    private boolean validaCasaCerrada(Observacion observacion)
-    {
-        return observacion.getId() == 25;
+    private boolean validaCasaCerrada(Observacion observacion) {
+        return observacion.getId () == 25;
     }
 
     /**
      * Valida que se ingreso lectura para claves en que es requerida.
+     *
      * @param v Valor del campo de lectura
      * @param c Clave de lectura seleccionada en spinner
      * @return boolean
      */
-    private boolean validarLectura(String v, ClaveLectura c)
-    {
-        if(!c.isLecturaRequerida() && v.isEmpty())
-            return  true;
-        else if(!v.isEmpty())
-        {
+    private boolean validarLectura(String v, ClaveLectura c) {
+        if (!c.isLecturaRequerida () && v.isEmpty ())
+            return true;
+        else if (!v.isEmpty ()) {
             return true;
         }
         return false;
@@ -286,143 +277,128 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
 
     /**
      * Valida que se haya ingresado observacion.
+     *
      * @param observacion Observacion seleccionada en spinner
      * @return bollean
      */
-    private boolean validarObservacion(Observacion observacion)
-    {
+    private boolean validarObservacion(Observacion observacion) {
         return true;
         //return observacion.getId() != 0;
     }
 
     /**
-     * Metodo encargado de guardar todos los datos de la lectura ingresada.
-     * @param lectura Lectura ingresada por usuario
-     * @param clave Clave seleccionada en spinner
+     * Metodo encargado de guardar todos los datos de la lectura ingresada con fotografia
+     *
+     * @param lectura     Lectura ingresada por usuario
+     * @param clave       Clave seleccionada en spinner
      * @param observacion Observacion seleccionada en spinner
      */
-    private void guardarLectura(double lectura, ClaveLectura clave, Observacion observacion)
-    {
+
+    private int valida = 0;
+    private void guardarLectura(double lectura, ClaveLectura clave, Observacion observacion) {
         //Obtiene posicion gps al momento de guardar lectura
         String locationProvider = LocationManager.NETWORK_PROVIDER;
-        LocationManager location = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
-        @SuppressLint("MissingPermission") Location lastKnownLocation = location.getLastKnownLocation(locationProvider);
-        this.ordenLectura.setGpsLatitud(lastKnownLocation.getLatitude());
-        this.ordenLectura.setGpsLongitud(lastKnownLocation.getLongitude());
+        LocationManager location = (LocationManager) this.getActivity ().getSystemService (Context.LOCATION_SERVICE);
+        @SuppressLint("MissingPermission") Location lastKnownLocation = location.getLastKnownLocation (locationProvider);
+        this.ordenLectura.setGpsLatitud (lastKnownLocation.getLatitude ());
+        this.ordenLectura.setGpsLongitud (lastKnownLocation.getLongitude ());
 
         //Se actualizan los datos del numerador
+        this.ordenLectura.getNumeradores ().get (numerador).setLecturaActual (lectura);
+        this.ordenLectura.getNumeradores ().get (numerador).setClaveLecturaId (clave.getId ());
+        this.ordenLectura.getNumeradores ().get (numerador).setObservacionId (observacion.getId ());
+        this.ordenLectura.getNumeradores ().get (numerador).setFechaEjecucion (new Date ().getTime ());
 
-        this.ordenLectura.getNumeradores().get(numerador).setLecturaActual(lectura);
-        this.ordenLectura.getNumeradores().get(numerador).setClaveLecturaId(clave.getId());
-        this.ordenLectura.getNumeradores().get(numerador).setObservacionId(observacion.getId());
-        this.ordenLectura.getNumeradores().get(numerador).setFechaEjecucion(new Date().getTime());
-
-        this.bd.abrir();
-        this.bd.actualizarDetalleOrden(this.ordenLectura.getNumeradores().get(numerador));
-
-
+        this.bd.abrir ();
+        this.bd.actualizarDetalleOrden (this.ordenLectura.getNumeradores ().get (numerador));
+        fueraRango = this.ordenLectura.getNumeradores ().get (numerador).fueraDeRango (lectura, clave);
         //Guardar datos de detalle de orden en la base de datos
-        this.ordenLectura.getNumeradores().get(numerador).setClaveLecturaId(clave.getId());
+        this.ordenLectura.getNumeradores ().get (numerador).setClaveLecturaId (clave.getId ());
         //A este estado se debe pasar solo cuando sea el ultimo numerador el ingresado,
         //si no es el ultimo se debe pasar al siguiente numerador
-        if(this.ordenLectura.getNumeradores().size() == (numerador + 1) )
-        {
-            if(this.ordenLectura.getNumeradores().get(numerador).getIntentos() >= 2 || clave.getId() != 1)
-            {
-                Toast.makeText(this.getContext(),"Foto", Toast.LENGTH_SHORT).show();
+        if (this.ordenLectura.getNumeradores ().size () == (numerador + 1)) {
+            // Valida la Cantidad de intentos y si esta fuera de rango
+            if(this.ordenLectura.getNumeradores ().get(numerador).getIntentos () >= 2 || clave.getId () != 1) {
                 // se toma fotografia
-                Fragment fragment = null;
-                try {
-                    fragment = CamaraFragment.class.newInstance();
-                } catch (java.lang.InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-
-                //Parametros que se pasan al fragment
-                Bundle args = new Bundle();
-                args.putSerializable("claveLectura", clave);
-                args.putSerializable("detalle", this.ordenLectura.getNumeradores().get(numerador));
-
-                fragment.setArguments(args);
-
-                android.support.v4.app.FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-            }
-            else
-            {
-
-                ParametrosImpresora parametros = this.bd.buscarParametrosImpresora(1);
-                if (parametros.isImpresionHabilitada())
-                {
-                    this.ordenLectura.setAutorizadoFacturacion(true);
-                    //TODO: Llamar activity impresora
-                    //this.imprimirBoleta();
-
+                if(fueraRango){
+                    Toast.makeText (this.getContext (), "Foto", Toast.LENGTH_SHORT).show ();
                     Fragment fragment = null;
                     try {
-                        fragment = ImpresionActivity.class.newInstance();
+                        fragment = CamaraFragment.class.newInstance ();
                     } catch (java.lang.InstantiationException e) {
-                        e.printStackTrace();
+                        e.printStackTrace ();
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        e.printStackTrace ();
                     }
 
                     //Parametros que se pasan al fragment
-                    Bundle args = new Bundle();
-                    args.putSerializable("orden", ordenLectura);
+                    Bundle args = new Bundle ();
+                    args.putSerializable ("claveLectura", clave);
+                    args.putSerializable ("observacion", observacion);
+                    args.putSerializable ("detalle", this.ordenLectura.getNumeradores ().get (numerador));
 
-                    fragment.setArguments(args);
+                    fragment.setArguments (args);
 
-                    android.support.v4.app.FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit();
-                    this.ordenLectura.setFacturado(true);
+                    android.support.v4.app.FragmentManager fragmentManager = this.getActivity ().getSupportFragmentManager ();
+                    fragmentManager.beginTransaction ().replace (R.id.flContent, fragment).commit ();
                 }
+                else{
+                    if(valida == 0 ) {
+                        valida ++;
+                        this.txtLectura.setText ("");
+                    }
+                    else{
+                        this.getActivity().onBackPressed();
+                    }
+
+
+                }
+
             }
             this.ordenLectura.setEstadoLecturaId(4);
             this.bd.abrir();
             Log.d("folio", Integer.toString(ordenLectura.getFolioCasaCerrada()));
             this.bd.actualizarOrden(this.ordenLectura);
         }
-        else
-        {
-            ParametrosImpresora parametros = this.bd.buscarParametrosImpresora(1);
-            if (parametros.isImpresionHabilitada())
-            {
-                //TODO: Llamar activity impresora
-                //this.imprimirBoleta();
-                Intent imprimir = new Intent(this.getContext(), CamaraFragment.class);
-                startActivityForResult(imprimir, FACTURA);
-
-                //Intent resultIntent = new Intent();
-                //setResult(Activity.RESULT_OK, resultIntent);
-                //finish();
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-            else
-            {
-                //Intent resultIntent = new Intent();
-                //setResult(Activity.RESULT_OK, resultIntent);
-                //finish();
-                getActivity().getSupportFragmentManager().popBackStack();
-            }
-        }
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        System.out.println (contador);
 
-        if(contador ==0){
+    //Metodo Para Guardar lecturas sin Fotografias
+    private void guardarLecturaNormal(double lectura, ClaveLectura clave, Observacion observacion) {
+        //Obtiene posicion gps al momento de guardar lectura
+        String locationProvider = LocationManager.NETWORK_PROVIDER;
+        LocationManager location = (LocationManager) this.getActivity ().getSystemService (Context.LOCATION_SERVICE);
+        @SuppressLint("MissingPermission") Location lastKnownLocation = location.getLastKnownLocation (locationProvider);
+        this.ordenLectura.setGpsLatitud (lastKnownLocation.getLatitude ());
+        this.ordenLectura.setGpsLongitud (lastKnownLocation.getLongitude ());
+
+        //Se actualizan los datos del numerador
+        this.ordenLectura.getNumeradores ().get (numerador).setLecturaActual (lectura);
+        this.ordenLectura.getNumeradores ().get (numerador).setClaveLecturaId (clave.getId ());
+        this.ordenLectura.getNumeradores ().get (numerador).setObservacionId (observacion.getId ());
+        this.ordenLectura.getNumeradores ().get (numerador).setFechaEjecucion (new Date ().getTime ());
+
+        this.bd.abrir ();
+        this.bd.actualizarDetalleOrden (this.ordenLectura.getNumeradores ().get (numerador));
+        this.ordenLectura.setEstadoLecturaId(4);
+        this.bd.actualizarOrden(this.ordenLectura);
+
+        this.getActivity().onBackPressed();
+
+    }
+
+
+
+        @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if(contador== 0){
             contador ++;
-        }
-        else {
+        }else
+        {
             ClaveLectura clave = (ClaveLectura) parent.getSelectedItem ();
             this.observaciones.setAdapter (new SpinAdapterObservaciones (this.getContext (), android.R.layout.simple_spinner_item, clave.getObservaciones ()));
             this.observaciones.performClick ();
         }
-        System.out.println (contador);
 
     }
 
