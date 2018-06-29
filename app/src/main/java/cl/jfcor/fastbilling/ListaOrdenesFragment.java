@@ -19,7 +19,7 @@ import modelos.OrdenLectura;
 import modelos.Ruta;
 import modelos.Usuario;
 
-public class ListaOrdenesFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener
+public class ListaOrdenesFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemSelectedListener
 {
     private static final String TAG = "Ordenes de lectura";
 
@@ -30,6 +30,7 @@ public class ListaOrdenesFragment extends Fragment implements AdapterView.OnItem
     private Usuario usuario;
     private Bd bd;
     private Spinner filtro;
+    private Spinner orden;
     private EditText buscar;
     private TextView pendientes;
     private int tipoLectura;
@@ -52,12 +53,19 @@ public class ListaOrdenesFragment extends Fragment implements AdapterView.OnItem
 
         //Se agregan filtros al spinner
         String[] arraySpinner = new String[] {"Dirección", "N° Medidor"};
+        String[] arrayOrderBy = new String[] {"", "Dirección Ascendente", "Dirección Descendente"};
         this.filtro = (Spinner) this.getView().findViewById(R.id.filtroImpresion);
+        this.orden = (Spinner) this.getView().findViewById(R.id.spinnerOrden);
 
         ArrayAdapter<String> adapter;
         adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, arraySpinner);
         adapter.setDropDownViewResource (android.R.layout.simple_spinner_item);
         this.filtro.setAdapter(adapter);
+
+        ArrayAdapter<String> adapterOrden = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, arrayOrderBy);
+        adapterOrden.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        this.orden.setAdapter(adapterOrden);
+        this.orden.setOnItemSelectedListener(this);
 
         this.buscar = (EditText) this.getView().findViewById(R.id.txt_busquedaImpresion);
         ImageButton btnBuscar = (ImageButton) this.getView().findViewById(R.id.btn_buscar);
@@ -73,7 +81,7 @@ public class ListaOrdenesFragment extends Fragment implements AdapterView.OnItem
     public void listarOrdenes()
     {
         this.bd.abrir();
-        this.ordenes = this.bd.leerOrdenes(this.ruta.getId(), this.tipoLectura);
+        this.ordenes = this.bd.leerOrdenes(this.ruta.getId(), this.tipoLectura, getOrderBy());
 
         ListView lista = (ListView) this.getView().findViewById(R.id.listaOrdenes);
         RowOrden ordenesAdapter = new RowOrden(this.ordenes, this.getActivity());
@@ -122,17 +130,50 @@ public class ListaOrdenesFragment extends Fragment implements AdapterView.OnItem
     @Override
     public void onClick(View v)
     {
+        this.filtrar();
+    }
+
+    private String getOrderBy()
+    {
+        String orden = this.orden.getSelectedItem().toString();
+        String orderBy = null;
+
+        if (orden.equals("Dirección Ascendente"))
+            orderBy = "direccion ASC";
+        if (orden.equals("Dirección Descendente"))
+            orderBy = "direccion DESC";
+
+        return orderBy;
+    }
+
+    private void filtrar()
+    {
         String filtro = this.filtro.getSelectedItem().toString();
 
         if (filtro.equals("N° Medidor"))
-            this.ordenes = this.bd.listarOrdenesMedidor(this.buscar.getText().toString(), 1);
+            this.ordenes = this.bd.listarOrdenesMedidor(this.buscar.getText().toString(), 1, this.getOrderBy());
         if (filtro.equals("Dirección"))
-            this.ordenes = this.bd.listarOrdenesDireccion(this.buscar.getText().toString(), 1);
+            this.ordenes = this.bd.listarOrdenesDireccion(this.buscar.getText().toString(), 1, this.getOrderBy());
 
         ListView lista = (ListView) this.getView().findViewById(R.id.listaOrdenes);
         RowOrden ordenesAdapter = new RowOrden(this.ordenes, this.getActivity());
         lista.setAdapter(ordenesAdapter);
         lista.setOnItemClickListener(this);
         this.pendientes.setText("Pendientes: " + this.ordenes.size());
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+    {
+        if(this.buscar.getText().toString() != "")
+            this.listarOrdenes();
+        else
+            this.filtrar();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView)
+    {
+        return;
     }
 }
