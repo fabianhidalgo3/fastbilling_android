@@ -154,15 +154,15 @@ public class ListaImpresion extends Fragment implements AdapterView.OnItemClickL
         String filtro = this.filtro.getSelectedItem().toString();
         if (this.tipo == 1) {
             if (filtro.equals("N° Medidor"))
-                this.ordenes = this.bd.listarOrdenesMedidor(this.buscar.getText().toString(), 2);
+                this.ordenes = this.bd.listarOrdenesMedidor(this.buscar.getText().toString(), 2, null);
             if (filtro.equals("Dirección"))
-                this.ordenes = this.bd.listarOrdenesDireccion(this.buscar.getText().toString(), 2);
+                this.ordenes = this.bd.listarOrdenesDireccion(this.buscar.getText().toString(), 2, null);
         }
         else{
             if (filtro.equals("N° Medidor"))
-                this.ordenes = this.bd.listarOrdenesMedidor(this.buscar.getText().toString(), 3);
+                this.ordenes = this.bd.listarOrdenesMedidor(this.buscar.getText().toString(), 3, null);
             if (filtro.equals("Dirección"))
-                this.ordenes = this.bd.listarOrdenesDireccion(this.buscar.getText().toString(), 3);
+                this.ordenes = this.bd.listarOrdenesDireccion(this.buscar.getText().toString(), 3, null);
         }
         ListView lista = (ListView) this.getView().findViewById(R.id.listaOrdenesImpresion);
         RowOrden ordenesAdapter = new RowOrden(this.ordenes, this.getActivity());
