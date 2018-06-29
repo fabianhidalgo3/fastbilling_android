@@ -168,7 +168,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
             else
             {
                 //Proceso normal de toma de lectura
-                if(clave.getId () != 0)
+                if(validarLectura(this.txtLectura.getText().toString(), clave))
                 {
                     //Se valida que se ingreso lectura para claves en que esta es requerida
                     //Se obtiene lectura ingresada
