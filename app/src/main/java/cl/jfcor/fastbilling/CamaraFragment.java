@@ -64,22 +64,12 @@ public class CamaraFragment extends Fragment implements View.OnClickListener, Ca
         this.detalleId = detalle.getId();
 
         this.fotografiaActual = 1;
-
+        this.cantidadFotografias = clave.getNumFotografias();
 
         this.contador = (TextView) this.getActivity().findViewById(R.id.numero_fotografia);
 
-        if(clave.getId () == 1 || clave.getId () == 2 || clave.getId () == 3 || clave.getId () == 6) {
-            this.cantidadFotografias = 2;
-            if (this.contador != null)
-                this.contador.setText ("Fotografia " + this.fotografiaActual + "/" + this.cantidadFotografias);
-        }
-
-        if(clave.getId () == 4 || clave.getId () == 5  || clave.getId () == 7){
-            this.cantidadFotografias = 1;
-            if (this.contador != null)
-                this.contador.setText ("Fotografia " + this.fotografiaActual + "/" + this.cantidadFotografias);
-        }
-
+        if (this.contador != null)
+            this.contador.setText("Fotografia " + this.fotografiaActual + "/" + this.cantidadFotografias);
 
         // Se crea una instancia de camara
         this.mCamara = getCameraInstance();

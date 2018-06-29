@@ -697,7 +697,7 @@ public class Bd extends SQLiteOpenHelper
         while(c.moveToNext())
         {
             Ruta ruta = new Ruta(c.getInt(id),c.getString(codigo),
-                                 c.getString(nombre), c.getInt(usuario), leerOrdenes(c.getInt(id), tipoLectura));
+                                 c.getString(nombre), c.getInt(usuario), leerOrdenes(c.getInt(id), tipoLectura, null));
 
             //Se muestran solo las rutas con un numero de ordenes pendientes mayor a cero.
             if (ruta.getLecturas().size() != 0)
@@ -940,7 +940,7 @@ public class Bd extends SQLiteOpenHelper
      * @param tipoLectura Indica tipo de ordenes a cargar | 1 -> Lectura Normal | 2 -> Lectura Control
      * @return arreglo con todas las ordenes de la ruta
      */
-    public ArrayList<OrdenLectura> leerOrdenes(int rutaCarga, int tipoLectura)
+    public ArrayList<OrdenLectura> leerOrdenes(int rutaCarga, int tipoLectura, String orderBy)
     {
         ArrayList<OrdenLectura> resultado = new ArrayList<>();
 
@@ -951,7 +951,7 @@ public class Bd extends SQLiteOpenHelper
                 "factor_cobro_id", "folio_casa_cerrada", "autorizado_facturacion", "facturado", "flag_envio"};
         String[] args = new String[] {Integer.toString(rutaCarga), Integer.toString(tipoLectura)};
 
-        Cursor c = this.getReadableDatabase().query("ordenlectura", filas, "ruta_id=? and tipo_lectura_id=?", args, null, null, null);
+        Cursor c = this.getReadableDatabase().query("ordenlectura", filas, "ruta_id=? and tipo_lectura_id=?", args, null, null, orderBy);
 
         int id = c.getColumnIndex(_ID);
         int codigo = c.getColumnIndex("codigo");
@@ -1485,7 +1485,7 @@ public class Bd extends SQLiteOpenHelper
      *               -> 2 = busqueda de ordenes en estado 4 y facturadas
      *               -> 3 = busqueda de ordenes en estado 4 autorizadas a facturar
      */
-    public ArrayList<OrdenLectura> listarOrdenesMedidor(String medidor, int modoBusqueda)
+    public ArrayList<OrdenLectura> listarOrdenesMedidor(String medidor, int modoBusqueda, String orderBy)
     {
         ArrayList<OrdenLectura> resultado = new ArrayList<>();
 
@@ -1499,15 +1499,16 @@ public class Bd extends SQLiteOpenHelper
         switch (modoBusqueda) {
             case 1:
                 query = "SELECT * FROM ordenlectura INNER JOIN medidor ON ordenlectura.medidor_id = medidor." +
-                        _ID + " WHERE medidor.numero_medidor LIKE ? and ordenlectura.estado_lectura_id = 3";
+                        _ID + " WHERE medidor.numero_medidor LIKE ? and ordenlectura.estado_lectura_id = 3 " + "ORDER BY " + orderBy;
                 break;
             case 2:
                 query = "SELECT * FROM ordenlectura INNER JOIN medidor ON ordenlectura.medidor_id = medidor." +
-                        _ID + " WHERE medidor.numero_medidor LIKE ? and ordenlectura.facturado=1";
+                        _ID + " WHERE medidor.numero_medidor LIKE ? and ordenlectura.facturado=1 " + "ORDER BY " + orderBy;
                 break;
             case 3:
                 query = "SELECT * FROM ordenlectura INNER JOIN medidor ON ordenlectura.medidor_id = medidor." +
-                        _ID + " WHERE medidor.numero_medidor LIKE ? and ordenlectura.autorizado_facturacion = 1 and ordenlectura.facturado=0";
+                        _ID + " WHERE medidor.numero_medidor LIKE ? and ordenlectura.autorizado_facturacion = 1 and ordenlectura.facturado=0 "
+                        + "ORDER BY " + orderBy;
                 break;
 
         }
@@ -1567,7 +1568,7 @@ public class Bd extends SQLiteOpenHelper
      * @param direccionBusqueda Direccion busqueda
      * @return Arreglo con todas las ordenes que contengan direcciones similares a lo buscado
      */
-    public ArrayList<OrdenLectura> listarOrdenesDireccion(String direccionBusqueda, int modoBusqueda)
+    public ArrayList<OrdenLectura> listarOrdenesDireccion(String direccionBusqueda, int modoBusqueda, String orderBy)
     {
         ArrayList<OrdenLectura> resultado = new ArrayList<>();
 
@@ -1575,13 +1576,13 @@ public class Bd extends SQLiteOpenHelper
         String query = "";
         switch (modoBusqueda) {
             case 1:
-                query = "SELECT * FROM ordenlectura WHERE direccion LIKE ? and ordenlectura.estado_lectura_id = 3";
+                query = "SELECT * FROM ordenlectura WHERE direccion LIKE ? and ordenlectura.estado_lectura_id = 3 " + "ORDER BY " + orderBy;
                 break;
             case 2:
-                query = "SELECT * FROM ordenlectura WHERE direccion LIKE ? and ordenlectura.facturado=1";
+                query = "SELECT * FROM ordenlectura WHERE direccion LIKE ? and ordenlectura.facturado=1 " + "ORDER BY " + orderBy;
                 break;
             case 3:
-                query = "SELECT * FROM ordenlectura WHERE direccion LIKE ? and ordenlectura.autorizado_facturacion = 1 and ordenlectura.facturado=0";
+                query = "SELECT * FROM ordenlectura WHERE direccion LIKE ? and ordenlectura.autorizado_facturacion = 1 and ordenlectura.facturado=0 " + "ORDER BY " + orderBy;
                 break;
 
         }
