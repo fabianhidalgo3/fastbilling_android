@@ -58,6 +58,8 @@ public class API
 	private String urlFotografias;
     private String urlAsignacionesReparto;
     private String urlOrdenReparto;
+    int contador = 0;
+
 
     public API(Context contexto)
     {
@@ -462,40 +464,34 @@ public class API
     {
         this.baseDatos.abrir();
         Usuario u = this.baseDatos.buscarUsuario(usuario);
-
-
+        //final int contador =0;
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET,
                 this.urlAsignaciones + "?user_email=" + u.getEmail() + "&user_token=" + u.getToken() + "&id=" + u.getId()
                 , null, new Response.Listener<JSONArray>()
         {
+            int contador = 0;
             @Override
-            public void onResponse(JSONArray response){
-                Log.d("Response", response.toString());
-                for(int i = 0; i < response.length(); i++)
-                {
+            public void onResponse(JSONArray response) {
+                Log.d ("Response", response.toString ());
+                for (int i = 0; i < response.length (); i++) {
                     JSONObject asignacion;
-                    try
-                    {
-                        asignacion = response.getJSONObject(i);
-						try
-                        {
-							if (!baseDatos.existeOrdenLectura(asignacion.getInt("orden_lectura_id")))
-                                cargaOrdenLectura(usuario, asignacion.getInt("orden_lectura_id"));
-						}
-						catch (SQLiteCantOpenDatabaseException e)
-						{
-							e.printStackTrace();
-						}
-						finally
-                        {
+                    try {
+                        asignacion = response.getJSONObject (i);
+                        try {
+                            if (!baseDatos.existeOrdenLectura (asignacion.getInt ("orden_lectura_id")))
+                                cargaOrdenLectura (usuario, asignacion.getInt ("orden_lectura_id"));
+                                contador = contador +1;
+                        } catch (SQLiteCantOpenDatabaseException e) {
+                            e.printStackTrace ();
+                        } finally {
 
                         }
-                    }
-                    catch (JSONException e)
-                    {
-                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace ();
                     }
                 }
+                Toast.makeText(contexto,"TOTAL ASIGNADO:" + contador,Toast.LENGTH_SHORT).show();
+
             }
         }, new Response.ErrorListener(){
             @Override
