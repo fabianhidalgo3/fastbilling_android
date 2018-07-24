@@ -152,7 +152,11 @@ public class Bd extends SQLiteOpenHelper
 
         String observacion = "CREATE TABLE observacion(" +
                              _ID + " INTEGER PRIMARY KEY," +
-                             "descripcion TEXT," +
+                             "num_fotografias INTEGER," +
+                             "requerido INTEGER," +
+                             "efectivo INTEGER," +
+                             "folio INTEGER," +
+                             "factura INTEGER," +
                              "clave_lectura_id INTEGER)";
 
         String perfiles = "CREATE TABLE perfiles(" +
