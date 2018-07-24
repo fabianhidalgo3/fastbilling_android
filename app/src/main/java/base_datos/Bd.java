@@ -1853,6 +1853,11 @@ public class Bd extends SQLiteOpenHelper
         ContentValues valores  = new ContentValues();
         valores.put(_ID, observacion.getId());
         valores.put("descripcion", observacion.getDescripcion());
+        valores.put("factura", observacion.getFactura ());
+        valores.put("efectivo", observacion.getEfectivo ());
+        valores.put("requerido", observacion.getRequerido ());
+        valores.put("folio", observacion.getFolio ());
+        valores.put("num_fotografias", observacion.getNum_fotografias ());
         valores.put("clave_lectura_id", observacion.getClaveLecturaId());
 
         this.getWritableDatabase().insert("observacion", null, valores);
@@ -1867,18 +1872,38 @@ public class Bd extends SQLiteOpenHelper
     {
         ArrayList<Observacion> resultado = new ArrayList<>();
 
-        String filas[] = {_ID, "descripcion", "clave_lectura_id"};
+        String filas[] = {_ID, "descripcion", "clave_lectura_id","num_fotografias", "efectivo", "requerido","factura", "folio"};
 
         Cursor c = this.getReadableDatabase().query("observacion", filas, "clave_lectura_id = " + idBusqueda, null, null, null, null);
 
         int id= c.getColumnIndex(_ID);
         int descripcion = c.getColumnIndex("descripcion");
+        int factura = c.getColumnIndex("factura");
+        int efectivo = c.getColumnIndex("efectivo");
+        int requerido = c.getColumnIndex("requerido");
+        int folio = c.getColumnIndex("folio");
+        int num_fotografias = c.getColumnIndex("num_fotografias");
         int clave_lectura = c.getColumnIndex("clave_lectura_id");
-
+        //Variable factura
+        boolean fact = false;
+        //Variable efectivo
+        boolean efec = false;
+        //variable requerido
+        boolean reque = false;
+        // variable folio
+        boolean fo = false;
         //resultado.add(new Observacion(0, "-- Seleccione Observación --", idBusqueda));
         while(c.moveToNext())
         {
-            resultado.add(new Observacion(c.getInt(id),c.getString(descripcion), c.getInt(clave_lectura)));
+            if(c.getInt(factura) == 1)
+                fact = true;
+            if(c.getInt(efectivo) == 1)
+                efec = true;
+            if(c.getInt(requerido) == 1)
+                reque = true;
+            if(c.getInt(folio) == 1)
+                fo = true;
+            resultado.add(new Observacion(c.getInt(id), c.getString(descripcion), c.getInt(clave_lectura), c.getInt (num_fotografias), reque, efec, fact, fo));
         }
 
         c.close();

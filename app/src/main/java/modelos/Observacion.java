@@ -38,31 +38,88 @@ public class Observacion implements Serializable
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getDescripcion() {
         return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public int getClaveLecturaId() {
         return claveLecturaId;
     }
 
+    public void setClaveLecturaId(int claveLecturaId) {
+        this.claveLecturaId = claveLecturaId;
+    }
+
     public int getNum_fotografias() {
         return num_fotografias;
     }
 
-    public boolean isRequerido() {
-        return requerido;
+    public void setNum_fotografias(int num_fotografias) {
+        this.num_fotografias = num_fotografias;
     }
 
-    public boolean isEfectivo() {
-        return efectivo;
+    public boolean isRequerido() { return requerido; }
+
+    public void setRequerido(boolean requerido) {
+        this.requerido = requerido;
+    }
+    // Get > Efectivo
+    public int getRequerido()
+    {
+        if(this.isRequerido ())
+            return 1;
+
+        return 0;
     }
 
-    public boolean isFactura() {
-        return factura;
+    public boolean isEfectivo() { return efectivo; }
+
+    public void setEfectivo(boolean efectivo) {
+        this.efectivo = efectivo;
+    }
+    // Get > Efectivo
+    public int getEfectivo()
+    {
+        if(this.isEfectivo ())
+            return 1;
+
+        return 0;
     }
 
-    public boolean isFolio() {
-        return folio;
+    public boolean isFactura() { return factura; }
+
+    public void setFactura(boolean factura) {
+        this.factura = factura;
+    }
+    // Get > Efectivo
+    public int getFactura()
+    {
+        if(this.isFactura ())
+            return 1;
+
+        return 0;
+    }
+
+    public boolean isFolio() { return folio; }
+
+    public void setFolio(boolean folio) {
+        this.folio = folio;
+    }
+
+    // Get > Folio
+    public int getFolio()
+    {
+        if(this.isFolio ())
+            return 1;
+
+        return 0;
     }
 }
