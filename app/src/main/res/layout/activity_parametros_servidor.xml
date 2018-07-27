@@ -56,6 +56,7 @@
         android:layout_below="@+id/textView18"
         android:ems="10"
         android:inputType="text"
+        android:text="metrogas"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@color/colorPrimaryDark" />
 
@@ -83,6 +84,7 @@
         android:layout_below="@+id/textView17"
         android:ems="10"
         android:inputType="textPassword"
+        android:text="metrogas"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@color/colorPrimaryDark" />
 
@@ -111,6 +113,7 @@
         android:layout_centerVertical="true"
         android:inputType="text"
         android:selectAllOnFocus="false"
+        android:text="providerlecturas.cl"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@color/colorPrimaryDark" />
 
@@ -138,6 +141,7 @@
         android:layout_below="@+id/textView16"
         android:ems="10"
         android:inputType="textPersonName"
+        android:text="25"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@color/colorPrimaryDark" />
 

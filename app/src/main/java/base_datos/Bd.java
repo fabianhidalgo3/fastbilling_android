@@ -152,12 +152,13 @@ public class Bd extends SQLiteOpenHelper
 
         String observacion = "CREATE TABLE observacion(" +
                              _ID + " INTEGER PRIMARY KEY," +
+                             "descripcion TEXT," +
+                             "clave_lectura_id INTEGER," +
                              "num_fotografias INTEGER," +
                              "requerido INTEGER," +
                              "efectivo INTEGER," +
                              "folio INTEGER," +
-                             "factura INTEGER," +
-                             "clave_lectura_id INTEGER)";
+                             "factura INTEGER)";
 
         String perfiles = "CREATE TABLE perfiles(" +
                            _ID + " INTEGER PRIMARY KEY," +
@@ -1853,12 +1854,13 @@ public class Bd extends SQLiteOpenHelper
         ContentValues valores  = new ContentValues();
         valores.put(_ID, observacion.getId());
         valores.put("descripcion", observacion.getDescripcion());
+        valores.put("clave_lectura_id", observacion.getClaveLecturaId());
+        valores.put("num_fotografias", observacion.getNum_fotografias ());
         valores.put("factura", observacion.getFactura ());
         valores.put("efectivo", observacion.getEfectivo ());
         valores.put("requerido", observacion.getRequerido ());
         valores.put("folio", observacion.getFolio ());
-        valores.put("num_fotografias", observacion.getNum_fotografias ());
-        valores.put("clave_lectura_id", observacion.getClaveLecturaId());
+
 
         this.getWritableDatabase().insert("observacion", null, valores);
     }
@@ -1878,12 +1880,12 @@ public class Bd extends SQLiteOpenHelper
 
         int id= c.getColumnIndex(_ID);
         int descripcion = c.getColumnIndex("descripcion");
+        int clave_lectura = c.getColumnIndex("clave_lectura_id");
+        int num_fotografias = c.getColumnIndex("num_fotografias");
         int factura = c.getColumnIndex("factura");
         int efectivo = c.getColumnIndex("efectivo");
         int requerido = c.getColumnIndex("requerido");
         int folio = c.getColumnIndex("folio");
-        int num_fotografias = c.getColumnIndex("num_fotografias");
-        int clave_lectura = c.getColumnIndex("clave_lectura_id");
         //Variable factura
         boolean fact = false;
         //Variable efectivo
@@ -1903,8 +1905,10 @@ public class Bd extends SQLiteOpenHelper
                 reque = true;
             if(c.getInt(folio) == 1)
                 fo = true;
+
             resultado.add(new Observacion(c.getInt(id), c.getString(descripcion), c.getInt(clave_lectura), c.getInt (num_fotografias), reque, efec, fact, fo));
         }
+        System.out.println (resultado);
 
         c.close();
         return resultado;

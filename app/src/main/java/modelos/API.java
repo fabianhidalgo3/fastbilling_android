@@ -247,6 +247,11 @@ public class API
                         observacion.setId(observacionLectura.getInt("id"));
                         observacion.setDescripcion(observacionLectura.getString("descripcion"));
                         observacion.setClaveLecturaId(observacionLectura.getInt("clave_lectura_id"));
+                        observacion.setNum_fotografias (observacionLectura.getInt ("num_fotografias"));
+                        observacion.setFactura (observacionLectura.getBoolean ("factura"));
+                        observacion.setRequerido (observacionLectura.getBoolean ("requerido"));
+                        observacion.setEfectivo (observacionLectura.getBoolean ("efectivo"));
+                        observacion.setFolio (observacionLectura.getBoolean ("folio"));
 
                         baseDatos.abrir();
                         baseDatos.insertarObservacion(observacion);
