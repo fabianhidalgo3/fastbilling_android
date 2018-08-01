@@ -297,11 +297,18 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
     private int valida = 0;
     private void guardarLectura(double lectura, ClaveLectura clave, Observacion observacion) {
         //Obtiene posicion gps al momento de guardar lectura
-        String locationProvider = LocationManager.NETWORK_PROVIDER;
+        String locationProvider = LocationManager.GPS_PROVIDER;
         LocationManager location = (LocationManager) this.getActivity ().getSystemService (Context.LOCATION_SERVICE);
-        @SuppressLint("MissingPermission") Location lastKnownLocation = location.getLastKnownLocation (locationProvider);
-        this.ordenLectura.setGpsLatitud (lastKnownLocation.getLatitude ());
-        this.ordenLectura.setGpsLongitud (lastKnownLocation.getLongitude ());
+        Location lastKnownLocation = location.getLastKnownLocation(locationProvider);
+        // Si es diferente de nulo se envia la posicion si no envia 0..
+        if (lastKnownLocation != null) {
+            this.ordenLectura.setGpsLatitud (lastKnownLocation.getLatitude ());
+            this.ordenLectura.setGpsLongitud (lastKnownLocation.getLongitude ());
+        }
+        else{
+            this.ordenLectura.setGpsLatitud (0);
+            this.ordenLectura.setGpsLongitud (0);
+        }
 
         //Se actualizan los datos del numerador
         this.ordenLectura.getNumeradores ().get (numerador).setLecturaActual (lectura);
@@ -368,7 +375,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
         //Obtiene posicion gps al momento de guardar lectura
         String locationProvider = LocationManager.NETWORK_PROVIDER;
         LocationManager location = (LocationManager) this.getActivity ().getSystemService (Context.LOCATION_SERVICE);
-        @SuppressLint("MissingPermission") Location lastKnownLocation = location.getLastKnownLocation (locationProvider);
+        Location lastKnownLocation = location.getLastKnownLocation(locationProvider);
         this.ordenLectura.setGpsLatitud (lastKnownLocation.getLatitude ());
         this.ordenLectura.setGpsLongitud (lastKnownLocation.getLongitude ());
 
