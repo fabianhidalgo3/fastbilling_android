@@ -302,7 +302,8 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
         Location lastKnownLocation = location.getLastKnownLocation(locationProvider);
         // Si es diferente de nulo se envia la posicion si no envia 0..
         if (lastKnownLocation != null) {
-            this.ordenLectura.setGpsLatitud (lastKnownLocation.getLatitude ());
+            this.
+            .setGpsLatitud (lastKnownLocation.getLatitude ());
             this.ordenLectura.setGpsLongitud (lastKnownLocation.getLongitude ());
         }
         else{
