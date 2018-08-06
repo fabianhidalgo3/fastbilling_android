@@ -1850,7 +1850,7 @@ public class Bd extends SQLiteOpenHelper
         valores.put(_ID, observacion.getId());
         valores.put("descripcion", observacion.getDescripcion());
         valores.put("clave_lectura_id", observacion.getClaveLecturaId());
-
+        // Agrego nuevos Valores
         this.getWritableDatabase().insert("observacion", null, valores);
     }
 
