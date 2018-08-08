@@ -174,7 +174,7 @@ public class API
 
 
         JsonArrayRequest clavesLecturaRequest = new JsonArrayRequest(Request.Method.GET,
-                urlClaveLectura + "?user_email=" + u.getEmail() + "&user_token=" + u.getToken(), null, new Response.Listener<JSONArray>()
+                urlClaveLectura + "?user_email=" + u.getEmail() + "&user_token=" + u.getToken(), (String) null, new Response.Listener<JSONArray>()
         {
             @Override
             public void onResponse(JSONArray response){
@@ -232,7 +232,7 @@ public class API
 
 
         JsonArrayRequest observacionesLecturaRequest = new JsonArrayRequest(Request.Method.GET,
-                this.urlObservacionLectura + "?user_email=" + u.getEmail() + "&user_token=" + u.getToken(), null, new Response.Listener<JSONArray>()
+                this.urlObservacionLectura + "?user_email=" + u.getEmail() + "&user_token=" + u.getToken(), (String) null, new Response.Listener<JSONArray>()
         {
             @Override
             public void onResponse(JSONArray response){
@@ -282,7 +282,7 @@ public class API
 
 
         JsonArrayRequest perfilesRequest = new JsonArrayRequest(Request.Method.GET,
-                urlPerfiles+ "?user_email=" + u.getEmail() + "&user_token=" + u.getToken(), null, new Response.Listener<JSONArray>()
+                urlPerfiles+ "?user_email=" + u.getEmail() + "&user_token=" + u.getToken(), (String) null, new Response.Listener<JSONArray>()
         {
             @Override
             public void onResponse(JSONArray response){
@@ -330,7 +330,7 @@ public class API
 
         JsonArrayRequest equiposRequest = new JsonArrayRequest(Request.Method.GET,
                 urlEquipos + "?user_email=" + u.getEmail() + "&user_token=" + u.getToken() + "&mac=" + new Mac().getMac().toLowerCase()
-                , null, new Response.Listener<JSONArray>()
+                , (String) null, new Response.Listener<JSONArray>()
         {
             @Override
             public void onResponse(JSONArray response){
@@ -373,7 +373,7 @@ public class API
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
                 urlUsuarios + "?user_email=" + u.getEmail() + "&user_token=" + u.getToken() + "&id=" + id
-                , null, new Response.Listener<JSONObject>()
+                , (String) null, new Response.Listener<JSONObject>()
         {
             @Override
             public void onResponse(JSONObject response){
@@ -415,7 +415,7 @@ public class API
         {
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
                     this.urlAsignaciones + "/desasignacion?user_email=" + u.getEmail() + "&user_token=" + u.getToken() + "&id=" + u.getId()
-                            + "&orden_id=" + orden.getId(), null, new Response.Listener<JSONObject>() {
+                            + "&orden_id=" + orden.getId(), (String) null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response)
                 {
@@ -467,7 +467,7 @@ public class API
         //final int contador =0;
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET,
                 this.urlAsignaciones + "?user_email=" + u.getEmail() + "&user_token=" + u.getToken() + "&id=" + u.getId()
-                , null, new Response.Listener<JSONArray>()
+                , (String) null, new Response.Listener<JSONArray>()
         {
             int contador = 0;
             @Override
@@ -490,7 +490,7 @@ public class API
                         e.printStackTrace ();
                     }
                 }
-                Toast.makeText(contexto,"TOTAL ASIGNADO:" + contador,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(contexto,"TOTAL ASIGNADO:" + contador,Toast.LENGTH_SHORT).show();
 
             }
         }, new Response.ErrorListener(){
@@ -516,7 +516,7 @@ public class API
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
                 this.urlOrdenLecturas + "?user_email=" + u.getEmail() + "&user_token=" + u.getToken() + "&id=" + ordenLecturaId
-                , null, new Response.Listener<JSONObject>()
+                , (String) null, new Response.Listener<JSONObject>()
         {
             @Override
             public void onResponse(JSONObject response){
@@ -908,7 +908,7 @@ public class API
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET,
                 this.urlAsignacionesReparto + "?user_email=" + u.getEmail() + "&user_token=" + u.getToken() + "&id=" + u.getId()
-                , null, new Response.Listener<JSONArray>()
+                , (String) null, new Response.Listener<JSONArray>()
         {
             @Override
             public void onResponse(JSONArray response){
@@ -965,7 +965,7 @@ public class API
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
                 this.urlOrdenReparto + "?user_email=" + u.getEmail() + "&user_token=" + u.getToken() + "&id=" + ordenRepartoId
-                , null, new Response.Listener<JSONObject>()
+                , (String) null, new Response.Listener<JSONObject>()
         {
             @Override
             public void onResponse(JSONObject response){

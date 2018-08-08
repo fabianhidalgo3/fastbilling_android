@@ -62,6 +62,7 @@ public class Observacion implements Serializable
     }
     public int getNumeroFotografias() { return numeroFotografias; }
     public void setNumeroFotografias(int numeroFotografias) { this.numeroFotografias = numeroFotografias; }
+
     public int getLecturaRequerida()
     {
         if(this.isLecturaRequerida())
@@ -71,6 +72,7 @@ public class Observacion implements Serializable
     }
     public boolean isLecturaRequerida() { return lecturaRequerida; }
     public void setLecturaRequerida(boolean lecturaRequerida) { this.lecturaRequerida = lecturaRequerida; }
+
     public int getLecturaEfectiva()
     {
         if(this.isLecturaEfectiva ())
@@ -80,6 +82,7 @@ public class Observacion implements Serializable
     }
     public boolean isLecturaEfectiva() { return lecturaEfectiva; }
     public void setLecturaEfectiva(boolean lecturaEfectiva) { this.lecturaEfectiva = lecturaEfectiva; }
+
     public int getFactura()
     {
         if(this.isFactura ())
@@ -89,6 +92,7 @@ public class Observacion implements Serializable
     }
     public boolean isFactura() { return factura; }
     public void setFactura(boolean factura) { this.factura = factura; }
+
     public int getFolio()
     {
         if(this.isFolio ())

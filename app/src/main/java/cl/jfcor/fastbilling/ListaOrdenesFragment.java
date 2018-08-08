@@ -53,17 +53,17 @@ public class ListaOrdenesFragment extends Fragment implements AdapterView.OnItem
 
         //Se agregan filtros al spinner
         String[] arraySpinner = new String[] {"Dirección", "N° Medidor"};
-        String[] arrayOrderBy = new String[] {"", "Dirección Ascendente", "Dirección Descendente"};
+        String[] arrayOrderBy = new String[] {"Dirección Ascendente", "Dirección Descendente"};
         this.filtro = (Spinner) this.getView().findViewById(R.id.filtroImpresion);
         this.orden = (Spinner) this.getView().findViewById(R.id.spinnerOrden);
 
         ArrayAdapter<String> adapter;
-        adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, arraySpinner);
-        adapter.setDropDownViewResource (android.R.layout.simple_spinner_item);
+        adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_dropdown_item, arraySpinner);
+        adapter.setDropDownViewResource (android.R.layout.simple_spinner_dropdown_item);
         this.filtro.setAdapter(adapter);
 
-        ArrayAdapter<String> adapterOrden = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, arrayOrderBy);
-        adapterOrden.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> adapterOrden = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_dropdown_item, arrayOrderBy);
+        adapterOrden.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         this.orden.setAdapter(adapterOrden);
         this.orden.setOnItemSelectedListener(this);
 

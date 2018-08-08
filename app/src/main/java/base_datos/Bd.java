@@ -153,7 +153,12 @@ public class Bd extends SQLiteOpenHelper
         String observacion = "CREATE TABLE observacion(" +
                              _ID + " INTEGER PRIMARY KEY," +
                              "descripcion TEXT," +
-                             "clave_lectura_id INTEGER)";
+                             "clave_lectura_id INTEGER," +
+                             "numero_fotografias INTEGER," +
+                             "lectura_efectiva INTEGER," +
+                             "lectura_requerida INTEGER," +
+                             "factura INTEGER," +
+                             "folio INTEGER)";
 
         String perfiles = "CREATE TABLE perfiles(" +
                            _ID + " INTEGER PRIMARY KEY," +
@@ -1843,6 +1848,7 @@ public class Bd extends SQLiteOpenHelper
      * Insertar observacion.
      *
      * @param observacion Objeto del tipo Observacion de lectura
+     *
      */
     public void insertarObservacion(Observacion observacion)
     {
@@ -1850,6 +1856,11 @@ public class Bd extends SQLiteOpenHelper
         valores.put(_ID, observacion.getId());
         valores.put("descripcion", observacion.getDescripcion());
         valores.put("clave_lectura_id", observacion.getClaveLecturaId());
+        valores.put("numero_fotografias", observacion.getNumeroFotografias ());
+        valores.put("lectura_requerida", observacion.getLecturaRequerida ());
+        valores.put ("lectura_efectiva", observacion.getLecturaEfectiva ());
+        valores.put("factura", observacion.getFactura ());
+        valores.put("folio", observacion.getFolio ());
         // Agrego nuevos Valores
         this.getWritableDatabase().insert("observacion", null, valores);
     }
@@ -1863,20 +1874,44 @@ public class Bd extends SQLiteOpenHelper
     {
         ArrayList<Observacion> resultado = new ArrayList<>();
 
-        String filas[] = {_ID, "descripcion", "clave_lectura_id"};
+        String filas[] = {_ID, "descripcion", "clave_lectura_id","numero_fotografias", "lectura_requerida", "lectura_efectiva","factura","folio"};
 
         Cursor c = this.getReadableDatabase().query("observacion", filas, "clave_lectura_id = " + idBusqueda, null, null, null, null);
 
         int id= c.getColumnIndex(_ID);
         int descripcion = c.getColumnIndex("descripcion");
         int clave_lectura = c.getColumnIndex("clave_lectura_id");
+        int numeroFotografias = c.getColumnIndex ("numero_fotografias");
+        int lecturaRequerida = c.getColumnIndex ("lectura_requerida");
+        int lecturaEfectiva = c.getColumnIndex ("lectura_efectiva");
+        int facturaRequerida = c.getColumnIndex ("factura");
+        int folioRequerido = c.getColumnIndex ("folio");
 
-        //resultado.add(new Observacion(0, "-- Seleccione Observación --", idBusqueda));
+        boolean requerida = false;
+        boolean efectiva = false;
+        boolean factura = false;
+        boolean folio = false;
+
         while(c.moveToNext())
         {
-            resultado.add(new Observacion(c.getInt(id),c.getString(descripcion), c.getInt(clave_lectura)));
+
+            if(c.getInt(lecturaRequerida) == 1)
+                requerida = true;
+
+            else if(c.getInt(lecturaEfectiva) == 1)
+                efectiva = true;
+
+            else if(c.getInt(facturaRequerida) == 1)
+                factura = true;
+
+            else if(c.getInt(folioRequerido) == 1)
+                folio = true;
+
+            resultado.add(new Observacion(c.getInt(id),c.getString(descripcion), c.getInt(clave_lectura),
+                    c.getInt (numeroFotografias),requerida,efectiva,factura,folio));
         }
 
+        System.out.println ("test.... " + resultado);
         c.close();
         return resultado;
     }
