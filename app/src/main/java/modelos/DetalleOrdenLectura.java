@@ -206,12 +206,12 @@ public class DetalleOrdenLectura implements Serializable
         this.rangoInferior = rangoInferior;
     }
 
-    public boolean fueraDeRango(double lectura, ClaveLectura clave )
+    public boolean fueraDeRango(double lectura, Observacion observacion )
     {
         //Si la clave no requiere lectura, la lectura siempre esta dentro del rango.
-		if(!clave.isLecturaRequerida())
+		if(!observacion.isLecturaRequerida())
 		    return false;
-
+        System.out.println (observacion.isLecturaRequerida ());
         //Verifica cuantas veces se ha ingresado la misma lectura
         if( this.lecturaActual == lectura)
             this.intentos++;

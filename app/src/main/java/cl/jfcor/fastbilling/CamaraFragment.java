@@ -28,6 +28,7 @@ import modelos.CamaraPreview;
 import modelos.ClaveLectura;
 import modelos.DetalleOrdenLectura;
 import modelos.Fotografia;
+import modelos.Observacion;
 
 /**
  * Created by brayan on 29-06-17.
@@ -58,13 +59,14 @@ public class CamaraFragment extends Fragment implements View.OnClickListener, Ca
 
         //Se obtienen datos.
         Bundle args = getArguments();
-        ClaveLectura clave = (ClaveLectura) args.getSerializable("claveLectura");
+        Observacion observacion = (Observacion) args.getSerializable ("observacion");
+        //ClaveLectura clave = (ClaveLectura) args.getSerializable("claveLectura");
         DetalleOrdenLectura detalle = (DetalleOrdenLectura) args.getSerializable("detalle");
 
         this.detalleId = detalle.getId();
 
         this.fotografiaActual = 1;
-        this.cantidadFotografias = clave.getNumFotografias();
+        this.cantidadFotografias = observacion.getNumeroFotografias ();
 
         this.contador = (TextView) this.getActivity().findViewById(R.id.numero_fotografia);
 

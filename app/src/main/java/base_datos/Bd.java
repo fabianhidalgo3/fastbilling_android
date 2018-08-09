@@ -1874,7 +1874,7 @@ public class Bd extends SQLiteOpenHelper
     {
         ArrayList<Observacion> resultado = new ArrayList<>();
 
-        String filas[] = {_ID, "descripcion", "clave_lectura_id","numero_fotografias", "lectura_requerida", "lectura_efectiva","factura","folio"};
+        String filas[] = {_ID, "descripcion", "clave_lectura_id","numero_fotografias", "lectura_requerida", "lectura_efectiva","factura", "folio"};
 
         Cursor c = this.getReadableDatabase().query("observacion", filas, "clave_lectura_id = " + idBusqueda, null, null, null, null);
 
@@ -1895,17 +1895,20 @@ public class Bd extends SQLiteOpenHelper
         while(c.moveToNext())
         {
 
-            if(c.getInt(lecturaRequerida) == 1)
+            if(c.getInt(lecturaRequerida) == 1) {
                 requerida = true;
+            }
 
-            else if(c.getInt(lecturaEfectiva) == 1)
+            if(c.getInt(lecturaEfectiva) == 1) {
                 efectiva = true;
+            }
 
-            else if(c.getInt(facturaRequerida) == 1)
+            if(c.getInt(facturaRequerida) == 1) {
                 factura = true;
-
-            else if(c.getInt(folioRequerido) == 1)
+            }
+            if(c.getInt(folioRequerido) == 1) {
                 folio = true;
+            }
 
             resultado.add(new Observacion(c.getInt(id),c.getString(descripcion), c.getInt(clave_lectura),
                     c.getInt (numeroFotografias),requerida,efectiva,factura,folio));

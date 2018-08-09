@@ -129,13 +129,13 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
         //Se valida ingreso de observacion
         if(this.validarObservacion(observacion))
         {
-            //Se valida si observacion ingresada corresponde a casa cerrada.
+            //Se valida si observacion ingresada corresponde a casa cerrada o no permite.
             if(this.validaCasaCerrada(observacion))
             {
                 //Solicitud de ingreso folio casa cerrada
                 final String[] m_Text = new String[1];
                 AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-                builder.setTitle("Ingrese Número de folio talonario casa cerrada");
+                builder.setTitle("Ingrese número de folio...");
 
                 final EditText input = new EditText(this.getContext());
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -164,7 +164,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
             else
             {
                 //Proceso normal de toma de lectura
-                if(validarLectura(this.txtLectura.getText().toString(), clave))
+                if(validarLectura(this.txtLectura.getText().toString(), observacion))
                 {
                     //Se valida que se ingreso lectura para claves en que esta es requerida
                     //Se obtiene lectura ingresada
@@ -184,7 +184,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
                     this.bd.insertarIntento(new Intento(0, this.ordenLectura.getNumeradores().get(numerador).getId(), lectura, 0));
 
                     //Validar si lectura dentro de rango
-                    if(!this.ordenLectura.getNumeradores().get(numerador).fueraDeRango(lectura, clave))
+                    if(!this.ordenLectura.getNumeradores().get(numerador).fueraDeRango(lectura, observacion))
                     {
                         //Lectura dentro de rango o con 2 intentos con la misma lectura.
                         //Guardar lectura
@@ -254,7 +254,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
     private boolean validaCasaCerrada(Observacion observacion) {
         if (observacion.getId () == 24 || (observacion.getId () == 25)) {
             return true;
-        }{
+        }else{
             return false;
         }
         }
@@ -263,11 +263,11 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
      * Valida que se ingreso lectura para claves en que es requerida.
      *
      * @param v Valor del campo de lectura
-     * @param c Clave de lectura seleccionada en spinner
+     * @param observacion Observación de lectura seleccionada en spinner
      * @return boolean
      */
-    private boolean validarLectura(String v, ClaveLectura c) {
-        if (!c.isLecturaRequerida () && v.isEmpty ())
+    private boolean validarLectura(String v, Observacion observacion) {
+        if (!observacion.isLecturaRequerida () && v.isEmpty ())
             return true;
         else if (!v.isEmpty ()) {
             return true;
@@ -306,8 +306,8 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
             this.ordenLectura.setGpsLongitud (lastKnownLocation.getLongitude ());
         }
         else{
-            this.ordenLectura.setGpsLatitud (0);
-            this.ordenLectura.setGpsLongitud (0);
+            this.ordenLectura.setGpsLatitud (0.0);
+            this.ordenLectura.setGpsLongitud (0.0);
         }
 
         //Se actualizan los datos del numerador
@@ -318,7 +318,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
 
         this.bd.abrir ();
         this.bd.actualizarDetalleOrden (this.ordenLectura.getNumeradores ().get (numerador));
-        fueraRango = this.ordenLectura.getNumeradores ().get (numerador).fueraDeRango (lectura, clave);
+        fueraRango = this.ordenLectura.getNumeradores ().get (numerador).fueraDeRango (lectura, observacion);
         //Guardar datos de detalle de orden en la base de datos
         this.ordenLectura.getNumeradores ().get (numerador).setClaveLecturaId (clave.getId ());
         //A este estado se debe pasar solo cuando sea el ultimo numerador el ingresado,
@@ -327,6 +327,8 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
             // Valida la Cantidad de intentos y si esta fuera de rango
             if(this.ordenLectura.getNumeradores ().get(numerador).getIntentos () >= 2 || clave.getId () != 1) {
                 // se toma fotografia
+
+                System.out.println ("Fuera de Rago:.... " + fueraRango);
                 if(fueraRango){
                     Toast.makeText (this.getContext (), "Foto", Toast.LENGTH_SHORT).show ();
                     Fragment fragment = null;
@@ -364,41 +366,15 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
             }
             this.ordenLectura.setEstadoLecturaId(4);
             this.bd.abrir();
-            Log.d("folio", Integer.toString(ordenLectura.getFolioCasaCerrada()));
             this.bd.actualizarOrden(this.ordenLectura);
         }
     }
 
-
-    //Metodo Para Guardar lecturas sin Fotografias
-    private void guardarLecturaNormal(double lectura, ClaveLectura clave, Observacion observacion) {
-        //Obtiene posicion gps al momento de guardar lectura
-        String locationProvider = LocationManager.NETWORK_PROVIDER;
-        LocationManager location = (LocationManager) this.getActivity ().getSystemService (Context.LOCATION_SERVICE);
-        Location lastKnownLocation = location.getLastKnownLocation(locationProvider);
-        this.ordenLectura.setGpsLatitud (lastKnownLocation.getLatitude ());
-        this.ordenLectura.setGpsLongitud (lastKnownLocation.getLongitude ());
-
-        //Se actualizan los datos del numerador
-        this.ordenLectura.getNumeradores ().get (numerador).setLecturaActual (lectura);
-        this.ordenLectura.getNumeradores ().get (numerador).setClaveLecturaId (clave.getId ());
-        this.ordenLectura.getNumeradores ().get (numerador).setObservacionId (observacion.getId ());
-        this.ordenLectura.getNumeradores ().get (numerador).setFechaEjecucion (new Date ().getTime ());
-
-        this.bd.abrir ();
-        this.bd.actualizarDetalleOrden (this.ordenLectura.getNumeradores ().get (numerador));
-        this.ordenLectura.setEstadoLecturaId(4);
-        this.bd.actualizarOrden(this.ordenLectura);
-
-        this.getActivity().onBackPressed();
-
-    }
-
-
-
-        @Override
+    //Selecciona la Observación de Lectura...
+    @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if(contador== 0){
+
+        if(contador == 0){
             contador ++;
         }else
         {

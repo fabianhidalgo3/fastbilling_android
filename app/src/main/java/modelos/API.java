@@ -247,14 +247,17 @@ public class API
                         observacion.setId(observacionLectura.getInt("id"));
                         observacion.setDescripcion(observacionLectura.getString("descripcion"));
                         observacion.setClaveLecturaId(observacionLectura.getInt("clave_lectura_id"));
-
+                        observacion.setNumeroFotografias (observacionLectura.getInt("num_fotografias"));
+                        observacion.setLecturaRequerida (observacionLectura.getBoolean ("requerido"));
+                        observacion.setLecturaEfectiva (observacionLectura.getBoolean ("efectivo"));
+                        observacion.setFactura (observacionLectura.getBoolean ("factura"));
+                        observacion.setFolio (observacionLectura.getBoolean ("folio"));
                         baseDatos.abrir();
                         baseDatos.insertarObservacion(observacion);
-
                     }
                     catch (JSONException e)
                     {
-                        //e.printStackTrace();
+                        e.printStackTrace();
                     }
                 }
                 Toast.makeText(contexto,"Observaciones de lectura cargadas",Toast.LENGTH_SHORT).show();
