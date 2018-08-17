@@ -14,7 +14,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true">
 
         <LinearLayout
@@ -38,6 +38,7 @@
                     android:layout_height="wrap_content"
                     android:text="UL:"
                     android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:textSize="14sp"
                     tools:targetApi="lollipop" />
 
                 <EditText
@@ -48,7 +49,8 @@
                     android:ems="10"
                     android:focusableInTouchMode="false"
                     android:inputType="none"
-                    android:text="OSO010" />
+                    android:text="OSO010"
+                    android:textSize="14sp" />
 
                 <!--  Muestra Número de Cliente -->
                 <TextView
@@ -60,7 +62,8 @@
                     android:layout_below="@+id/ordenLectura_numCliente"
                     android:layout_weight="0.4"
                     android:text="IC:"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/ordenLectura_numCliente"
@@ -72,11 +75,12 @@
                     android:layout_alignStart="@+id/ordenLectura_numCliente"
                     android:layout_weight="0.6"
                     android:clickable="false"
-                    android:inputType="none"
                     android:ems="10"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:text="191001" />
+                    android:inputType="none"
+                    android:text="191001"
+                    android:textSize="14sp" />
             </LinearLayout>
 
 
@@ -97,11 +101,12 @@
                     android:layout_alignParentStart="true"
                     android:layout_weight="0.4"
                     android:text="Nombre:"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/ordenLectura_nomCliente"
-                    android:layout_width="wrap_content"
+                    android:layout_width="226dp"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/textnomCliente"
                     android:clickable="false"
@@ -109,7 +114,8 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:inputType="textMultiLine"
-                    android:text="Juan Perez" />
+                    android:text="Juan Perez"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -130,7 +136,8 @@
                     android:layout_alignParentStart="true"
                     android:layout_weight="1"
                     android:text="Dirección:"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -150,7 +157,8 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:inputType="textMultiLine"
-                    android:text="VOLCAN CORCOVADO 5800-A . . DEP-101" />
+                    android:text="VOLCAN CORCOVADO 5800-A . . DEP-101"
+                    android:textSize="14sp" />
             </LinearLayout>
             <!--  Muestra Nota Lectura de Cliente -->
 
@@ -169,7 +177,8 @@
                     android:layout_alignParentStart="true"
                     android:layout_weight="0.4"
                     android:text="Nota de Lectura"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -186,7 +195,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:ems="10"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -200,7 +210,7 @@
 
                 <TextView
                     android:id="@+id/textView4"
-                    android:layout_width="150dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBaseline="@+id/ordenLectura_numMedidor"
                     android:layout_alignBottom="@+id/ordenLectura_numMedidor"
@@ -208,11 +218,12 @@
                     android:layout_alignParentStart="true"
                     android:layout_weight="0.4"
                     android:text="Medidor:"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/ordenLectura_numMedidor"
-                    android:layout_width="wrap_content"
+                    android:layout_width="230dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
@@ -222,7 +233,8 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:inputType="textPersonName"
-                    android:text="1026832016" />
+                    android:text="1026832016"
+                    android:textSize="14sp" />
             </LinearLayout>
 
 
@@ -241,7 +253,8 @@
                     android:layout_alignParentStart="true"
                     android:layout_weight="0.8"
                     android:text="Tipo Cliente:"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/textNumerador"
@@ -250,9 +263,10 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_weight="0.2"
-                    android:text="Numerador:"
                     android:gravity="right"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+                    android:text="Numerador:"
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -268,12 +282,13 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:inputType="text"
                     android:clickable="false"
                     android:ems="10"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:text="Normal" />
+                    android:inputType="text"
+                    android:text="Normal"
+                    android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/ordenLectura_numerador"
@@ -284,9 +299,11 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:inputType="number"
-                    android:text="01" />
+                    android:text="01"
+                    android:textSize="14sp" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -303,7 +320,8 @@
                     android:layout_weight="0.4"
                     android:focusableInTouchMode="true"
                     android:text="Lectura:"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/ordenLectura_lectura"
@@ -311,9 +329,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/textnomCliente"
                     android:clickable="true"
+                    android:ems="10"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
-                    android:ems="10"
                     android:inputType="number"
                     android:text="" />
 
@@ -334,16 +352,18 @@
                     android:layout_alignTop="@+id/spinner_claves"
                     android:layout_weight="0.4"
                     android:text="Clave Lectura"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:textSize="14sp" />
 
                 <Spinner
                     android:id="@+id/spinner_claves"
-                    android:layout_height="wrap_content"
                     android:layout_width="227dp"
-                    android:scrollbarSize="@dimen/activity_horizontal_margin"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.6"
+                    android:scrollbarSize="@dimen/activity_horizontal_margin"
                     android:spinnerMode="dialog" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -360,7 +380,8 @@
                     android:layout_alignTop="@+id/spinner_observaciones"
                     android:layout_weight="0.4"
                     android:text="Observación"
-                    android:textAppearance="@android:style/TextAppearance.Material.Medium" />
+                    android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                    android:textSize="14sp" />
 
                 <Spinner
                     android:id="@+id/spinner_observaciones"
@@ -370,25 +391,40 @@
                     android:layout_alignStart="@+id/spinner_claves"
                     android:layout_below="@+id/spinner_claves"
                     android:layout_weight="0.6"
-                    android:spinnerMode="dialog"/>
+                    android:spinnerMode="dialog" />
             </LinearLayout>
 
 
-
             <LinearLayout
+                android:layout_marginTop="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.1"
                 android:orientation="horizontal"
-                android:weightSum="1"
-                android:layout_marginTop="10dp">
+                android:weightSum="1">
 
-                <Button
-                    android:id="@+id/ordenLectura_grabar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                <ImageButton
+                    android:id="@+id/ordenLectura_volver"
+                    android:layout_width="107dp"
+                    android:layout_height="36dp"
                     android:background="#d14836"
-                    android:text="Guardar Lectura"
+                    android:src="@drawable/ic_skip_previous_white_24dp"
+                    android:textColor="#fff" />
+
+                <ImageButton
+                    android:id="@+id/ordenLectura_grabar"
+                    android:layout_width="97dp"
+                    android:layout_height="36dp"
+                    android:background="#d14836"
+                    android:src="@drawable/ic_save_black_24dp"
+                    android:textColor="#fff" />
+
+                <ImageButton
+                    android:id="@+id/ordenLectura_siguiente"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:background="#d14836"
+                    android:src="@drawable/ic_skip_next_white_24dp"
                     android:textColor="#fff" />
             </LinearLayout>
         </LinearLayout>

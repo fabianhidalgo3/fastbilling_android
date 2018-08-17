@@ -158,7 +158,8 @@ public class Bd extends SQLiteOpenHelper
                              "lectura_efectiva INTEGER," +
                              "lectura_requerida INTEGER," +
                              "factura INTEGER," +
-                             "folio INTEGER)";
+                             "folio INTEGER," +
+                             "foto INTEGER)";
 
         String perfiles = "CREATE TABLE perfiles(" +
                            _ID + " INTEGER PRIMARY KEY," +
@@ -1861,6 +1862,8 @@ public class Bd extends SQLiteOpenHelper
         valores.put ("lectura_efectiva", observacion.getLecturaEfectiva ());
         valores.put("factura", observacion.getFactura ());
         valores.put("folio", observacion.getFolio ());
+        valores.put("foto", observacion.getFoto ());
+
         // Agrego nuevos Valores
         this.getWritableDatabase().insert("observacion", null, valores);
     }
@@ -1874,7 +1877,7 @@ public class Bd extends SQLiteOpenHelper
     {
         ArrayList<Observacion> resultado = new ArrayList<>();
 
-        String filas[] = {_ID, "descripcion", "clave_lectura_id","numero_fotografias", "lectura_requerida", "lectura_efectiva","factura", "folio"};
+        String filas[] = {_ID, "descripcion", "clave_lectura_id","numero_fotografias", "lectura_requerida", "lectura_efectiva","factura", "folio", "foto"};
 
         Cursor c = this.getReadableDatabase().query("observacion", filas, "clave_lectura_id = " + idBusqueda, null, null, null, null);
 
@@ -1886,11 +1889,13 @@ public class Bd extends SQLiteOpenHelper
         int lecturaEfectiva = c.getColumnIndex ("lectura_efectiva");
         int facturaRequerida = c.getColumnIndex ("factura");
         int folioRequerido = c.getColumnIndex ("folio");
+        int fotoRequerida = c.getColumnIndex ("foto");
 
         boolean requerida = false;
         boolean efectiva = false;
         boolean factura = false;
         boolean folio = false;
+        boolean foto = false;
 
         while(c.moveToNext())
         {
@@ -1909,9 +1914,12 @@ public class Bd extends SQLiteOpenHelper
             if(c.getInt(folioRequerido) == 1) {
                 folio = true;
             }
+            if(c.getInt(fotoRequerida) == 1) {
+                foto = true;
+            }
 
             resultado.add(new Observacion(c.getInt(id),c.getString(descripcion), c.getInt(clave_lectura),
-                    c.getInt (numeroFotografias),requerida,efectiva,factura,folio));
+                    c.getInt (numeroFotografias),requerida,efectiva,factura,folio, foto));
         }
 
         System.out.println ("test.... " + resultado);

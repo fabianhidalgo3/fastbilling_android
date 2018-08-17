@@ -1,10 +1,12 @@
 package modelos;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -34,6 +36,8 @@ import static com.android.volley.VolleyLog.TAG;
 /**
  * Creado por Brayan Gonzalez el 08-03-17.
  * Clase para manejar todas las comunicaciones con la API Web
+ * Modify funciones observaciones.. 05-03-17
+ *
  */
 
 public class API
@@ -165,6 +169,7 @@ public class API
     /**
      * Carga claves de lectura desde la API
      * @param usuario Nombre de usuario
+     * Todo: Validar Campos nulos en cargas...
      */
     public void cargaClaves(String usuario)
     {
@@ -182,17 +187,17 @@ public class API
                 for(int i = 0; i < response.length(); i++)
                 {
                     JSONObject claveLectura;
-                    try
-                    {
-                        claveLectura = response.getJSONObject(i);
-                        ClaveLectura clave = new ClaveLectura();
-                        clave.setId(claveLectura.getInt("id"));
-                        clave.setClave(claveLectura.getString("nombre"));
-                        clave.setCodigo(claveLectura.getString("codigo"));
-                        clave.setNumFotografias(claveLectura.getInt("num_fotografias"));
-                        clave.setDescripcionCorta(claveLectura.getString("descripcion_corta"));
-                        clave.setLecturaRequerida(claveLectura.getBoolean("requerido"));
-                        Log.d("requerido", Boolean.toString(clave.isLecturaRequerida()));
+                    try {
+                        claveLectura = response.getJSONObject (i);
+
+                        ClaveLectura clave = new ClaveLectura ();
+                        clave.setId (claveLectura.getInt ("id"));
+                        clave.setClave (claveLectura.getString ("nombre"));
+                        clave.setCodigo (claveLectura.getString ("codigo"));
+                        clave.setNumFotografias (claveLectura.getInt ("num_fotografias"));
+                        clave.setDescripcionCorta (claveLectura.getString ("descripcion_corta"));
+                        clave.setLecturaRequerida (claveLectura.getBoolean ("requerido"));
+
                         if(claveLectura.getString("tipo_cobro_id").equals("null"))
                             clave.setTipoCobroId(0);
                         else
@@ -252,6 +257,7 @@ public class API
                         observacion.setLecturaEfectiva (observacionLectura.getBoolean ("efectivo"));
                         observacion.setFactura (observacionLectura.getBoolean ("factura"));
                         observacion.setFolio (observacionLectura.getBoolean ("folio"));
+                        observacion.setFoto (observacionLectura.getBoolean ("foto"));
                         baseDatos.abrir();
                         baseDatos.insertarObservacion(observacion);
                     }
@@ -475,11 +481,24 @@ public class API
             int contador = 0;
             @Override
             public void onResponse(JSONArray response) {
-                Log.d ("Response", response.toString ());
+                int totalAsignado = response.length ();
+                if (totalAsignado != 0)
+                 new AlertDialog.Builder(contexto)
+                        .setTitle("Total Asignado")
+                        .setMessage("Se cargaran un total de: " + totalAsignado + " Ordenes de Lectura")
+                        .setPositiveButton("Aceptar", new DialogInterface.OnClickListener () {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                dialog.cancel();
+                            }
+                        }).show();
+
                 for (int i = 0; i < response.length (); i++) {
                     JSONObject asignacion;
                     try {
                         asignacion = response.getJSONObject (i);
+                        System.out.print ("Asignacines " +response.length ());
+                        //Toast.makeText (contexto, "Total Asignado: " + asignacion.size(),Toast.LENGTH_SHORT).show();
                         try {
                             if (!baseDatos.existeOrdenLectura (asignacion.getInt ("orden_lectura_id")))
                                 cargaOrdenLectura (usuario, asignacion.getInt ("orden_lectura_id"));
@@ -493,7 +512,6 @@ public class API
                         e.printStackTrace ();
                     }
                 }
-                //Toast.makeText(contexto,"TOTAL ASIGNADO:" + contador,Toast.LENGTH_SHORT).show();
 
             }
         }, new Response.ErrorListener(){

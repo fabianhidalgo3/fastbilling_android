@@ -19,12 +19,13 @@ public class Observacion implements Serializable
     private boolean lecturaEfectiva;
     private boolean factura;
     private boolean folio;
+    private boolean foto;
 
 
     public Observacion(){}
 
     public Observacion(int id, String descripcion, int clave_lectura_id, int numeroFotografias,
-                       boolean lecturaEfectiva, boolean lecturaRequerida, boolean factura, boolean folio)
+                       boolean lecturaEfectiva, boolean lecturaRequerida, boolean factura, boolean folio,boolean foto)
     {
         this.id = id;
         this.descripcion = descripcion;
@@ -34,6 +35,22 @@ public class Observacion implements Serializable
         this.lecturaEfectiva = lecturaEfectiva;
         this.factura = factura;
         this.folio = folio;
+        this.foto = folio;
+    }
+    public int getFoto()
+    {
+        if(this.isFoto())
+            return 1;
+
+        return 0;
+    }
+
+    public boolean isFoto() {
+        return foto;
+    }
+
+    public void setFoto(boolean foto) {
+        this.foto = foto;
     }
 
     public int getId()
@@ -60,8 +77,12 @@ public class Observacion implements Serializable
     {
         this.claveLecturaId = claveLecturaId;
     }
-    public int getNumeroFotografias() { return numeroFotografias; }
-    public void setNumeroFotografias(int numeroFotografias) { this.numeroFotografias = numeroFotografias; }
+    public int getNumeroFotografias() {
+        return numeroFotografias;
+    }
+    public void setNumeroFotografias(int numeroFotografias) {
+        this.numeroFotografias = numeroFotografias;
+    }
 
     public int getLecturaRequerida()
     {
@@ -70,8 +91,12 @@ public class Observacion implements Serializable
 
         return 0;
     }
-    public boolean isLecturaRequerida() { return lecturaRequerida; }
-    public void setLecturaRequerida(boolean lecturaRequerida) { this.lecturaRequerida = lecturaRequerida; }
+    public boolean isLecturaRequerida() {
+        return lecturaRequerida;
+    }
+    public void setLecturaRequerida(boolean lecturaRequerida) {
+        this.lecturaRequerida = lecturaRequerida;
+    }
 
     public int getLecturaEfectiva()
     {
@@ -80,8 +105,12 @@ public class Observacion implements Serializable
 
         return 0;
     }
-    public boolean isLecturaEfectiva() { return lecturaEfectiva; }
-    public void setLecturaEfectiva(boolean lecturaEfectiva) { this.lecturaEfectiva = lecturaEfectiva; }
+    public boolean isLecturaEfectiva() {
+        return lecturaEfectiva;
+    }
+    public void setLecturaEfectiva(boolean lecturaEfectiva) {
+        this.lecturaEfectiva = lecturaEfectiva;
+    }
 
     public int getFactura()
     {
@@ -90,8 +119,12 @@ public class Observacion implements Serializable
 
         return 0;
     }
-    public boolean isFactura() { return factura; }
-    public void setFactura(boolean factura) { this.factura = factura; }
+    public boolean isFactura() {
+        return factura;
+    }
+    public void setFactura(boolean factura) {
+        this.factura = factura;
+    }
 
     public int getFolio()
     {
@@ -100,6 +133,10 @@ public class Observacion implements Serializable
 
         return 0;
     }
-    public boolean isFolio() { return folio; }
-    public void setFolio(boolean folio) { this.folio = folio; }
+    public boolean isFolio() {
+        return folio;
+    }
+    public void setFolio(boolean folio) {
+        this.folio = folio;
+    }
 }

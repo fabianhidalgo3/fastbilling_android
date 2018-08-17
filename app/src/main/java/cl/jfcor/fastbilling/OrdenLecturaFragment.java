@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,7 +87,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
         TextView txtTipoCliente = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_tipoCliente);
 
         this.txtLectura = (EditText) this.getActivity ().findViewById (R.id.ordenLectura_lectura);
-        Button grabar = (Button) this.getActivity ().findViewById (R.id.ordenLectura_grabar);
+        ImageButton grabar = (ImageButton) this.getActivity ().findViewById (R.id.ordenLectura_grabar);
         grabar.setOnClickListener (this);
 
         txtRuta.setText (ruta);
