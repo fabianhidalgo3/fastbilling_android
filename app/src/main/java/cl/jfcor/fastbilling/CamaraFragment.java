@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import base_datos.Bd;
@@ -29,6 +30,8 @@ import modelos.ClaveLectura;
 import modelos.DetalleOrdenLectura;
 import modelos.Fotografia;
 import modelos.Observacion;
+import modelos.OrdenLectura;
+import modelos.Ruta;
 
 /**
  * Created by brayan on 29-06-17.
@@ -45,6 +48,10 @@ public class CamaraFragment extends Fragment implements View.OnClickListener, Ca
     private TextView contador;
     private int detalleId;
     private Bd bd;
+    private ArrayList<OrdenLectura> ordenes;
+    private int posicion;
+    private Ruta ruta;
+    private int tipoLectura;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +67,14 @@ public class CamaraFragment extends Fragment implements View.OnClickListener, Ca
         //Se obtienen datos.
         Bundle args = getArguments();
         Observacion observacion = (Observacion) args.getSerializable ("observacion");
+        this.posicion = args.getInt ("posicion");
+        this.ruta = (Ruta) args.getSerializable("ruta");
+        this.tipoLectura = args.getInt("tipoLectura");
+        String orden = args.getString ("ordendireccion" );
+
+        this.bd.abrir ();
+        this.ordenes = this.bd.leerOrdenes(this.ruta.getId(), 1, orden);
+
         //ClaveLectura clave = (ClaveLectura) args.getSerializable("claveLectura");
         DetalleOrdenLectura detalle = (DetalleOrdenLectura) args.getSerializable("detalle");
 
@@ -193,8 +208,30 @@ public class CamaraFragment extends Fragment implements View.OnClickListener, Ca
             //Intent resultIntent = new Intent();
             //setResult(Activity.RESULT_OK, resultIntent);
             //this.getActivity().getSupportFragmentManager().popBackStack();
-            this.getActivity().onBackPressed();
-        }
+            Fragment fragment = null;
+            try {
+                fragment = OrdenLecturaFragment.class.newInstance();
+            } catch (java.lang.InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
+            //Parametros que se pasan al fragment
+            Bundle args = new Bundle();
+            args.putSerializable("orden", ordenes.get(this.posicion ++));
+            //args.putSerializable("ruta",ruta.getCodigo());
+            args.putSerializable("tipolectura", this.tipoLectura);
+            args.putSerializable("ruta", this.ruta);
+            Bundle params = getArguments();
+            String orden = args.getString ("ordendireccion" );
+            args.putSerializable ("ordendireccion", orden);
+
+
+            fragment.setArguments(args);
+
+            android.support.v4.app.FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit();        }
     }
 
     @Override

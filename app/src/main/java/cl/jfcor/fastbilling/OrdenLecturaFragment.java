@@ -32,23 +32,29 @@ import modelos.Intento;
 import modelos.Medidor;
 import modelos.Observacion;
 import modelos.OrdenLectura;
+import modelos.Ruta;
+import modelos.Usuario;
 
 public class OrdenLecturaFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     public final static int CAMARA = 1;
     public final static int FACTURA = 2;
     private EditText txtLectura;
+    private ArrayList<OrdenLectura> ordenes;
     private Spinner claves;
     private Spinner observaciones;
     private OrdenLectura ordenLectura;
+    private int tipoLectura;
+    private Ruta ruta;
     private int numerador = 0;
     private Bd bd;
+    private int posicion = 0;
     private static boolean disponiblepGPS, disponibleRED;
     private static LocationManager locManager;
     private static String provider;
     private static final String TAG = "Clientes Pendientes";
     private static int contador;
     public static boolean fueraRango;
-
+    private int pantalla;
 
     //TODO: Mover funciones de impresion a otra vista.
     //TODO: Revisar intent result en fragment.
@@ -65,14 +71,18 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated (savedInstanceState);
-
-
         //Obtener argumentos
         Bundle args = getArguments ();
+
         this.ordenLectura = (OrdenLectura) args.getSerializable ("orden");
-        String ruta = args.getString ("ruta");
+        this.posicion = args.getInt ("posicion");
+        this.ruta = (Ruta) args.getSerializable("ruta");
+        this.tipoLectura = args.getInt("tipoLectura");
+        String orden = args.getString ("ordendireccion" );
 
         this.bd.abrir ();
+        this.ordenes = this.bd.leerOrdenes(this.ruta.getId(), 1, orden);
+
         Cliente cliente = this.bd.buscarCliente (this.ordenLectura.getClienteId ());
         Medidor medidor = this.bd.buscarMedidor (this.ordenLectura.getMedidorId ());
         Instalacion instalacion = this.bd.buscarInstalacion (this.ordenLectura.getInstalacionId ());
@@ -87,10 +97,17 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
         TextView txtTipoCliente = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_tipoCliente);
 
         this.txtLectura = (EditText) this.getActivity ().findViewById (R.id.ordenLectura_lectura);
+
         ImageButton grabar = (ImageButton) this.getActivity ().findViewById (R.id.ordenLectura_grabar);
         grabar.setOnClickListener (this);
 
-        txtRuta.setText (ruta);
+        ImageButton btnNext = (ImageButton) this.getView().findViewById(R.id.ordenLectura_siguiente);
+        btnNext.setOnClickListener (this);
+
+        ImageButton btnPre = (ImageButton) this.getView().findViewById(R.id.ordenLectura_volver);
+        btnPre.setOnClickListener(this);
+
+        txtRuta.setText (ruta.getCodigo ());
         txtNumCliente.setText (cliente.getNumero_cliente ());
         txtNomCliente.setText (cliente.getNombreCompleto ());
         txtdireccion.setText (cliente.getDireccion ());
@@ -99,17 +116,13 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
 
         // txtNumInstalacion.setText(instalacion.getCodigo());
 
+        //Creo Array con listado de claves de lectura
         ArrayList<ClaveLectura> claves = this.bd.leerClaves ();
-
-        for (int i = 0; i < claves.size (); i++) {
-            Log.d ("clave", claves.get (i).getClave ());
-        }
-
         this.claves = (Spinner) this.getActivity ().findViewById (R.id.spinner_claves);
         this.claves.setAdapter (new SpinAdapterClaves (this.getContext (), android.R.layout.simple_spinner_dropdown_item, claves));
         this.claves.setOnItemSelectedListener (this);
+        //Selecciona una clabe
         ClaveLectura clave = (ClaveLectura) this.claves.getSelectedItem ();
-
         this.observaciones = (Spinner) this.getActivity ().findViewById (R.id.spinner_observaciones);
         this.observaciones.setAdapter (new SpinAdapterObservaciones (this.getContext (), android.R.layout.simple_spinner_dropdown_item, clave.getObservaciones ()));
         contador = 0;
@@ -124,127 +137,225 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
-        final ClaveLectura clave = (ClaveLectura) this.claves.getSelectedItem();
-        final Observacion observacion = (Observacion) this.observaciones.getSelectedItem();
+        this.bd.abrir ();
+        // Switch Botones de Orden Lectura..
+        switch (view.getId()) {
+            // Boton Siguiente Lectura..
+            case R.id.ordenLectura_siguiente:
+                this.posicion ++;
+                if (ordenes.size () > this.posicion){
+                    this.ordenLectura = (OrdenLectura) ordenes.get (this.posicion);
+                }else {
+                    this.posicion = ordenes.size () - 1;
+                    this.ordenLectura = (OrdenLectura) ordenes.get (this.posicion);
 
-        //Se valida ingreso de observacion
-        if(this.validarObservacion(observacion))
-        {
-            //Se valida si observacion ingresada corresponde a casa cerrada o no permite.
-            if(this.validaCasaCerrada(observacion))
-            {
-                //Solicitud de ingreso folio casa cerrada
-                final String[] m_Text = new String[1];
-                AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-                builder.setTitle("Ingrese número de folio...");
+                }
+                Cliente cliente = this.bd.buscarCliente (this.ordenLectura.getClienteId ());
+                Medidor medidor = this.bd.buscarMedidor (this.ordenLectura.getMedidorId ());
+                Instalacion instalacion = this.bd.buscarInstalacion (this.ordenLectura.getInstalacionId ());
 
-                final EditText input = new EditText(this.getContext());
-                input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                builder.setView(input);
+                TextView txtRuta = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_ruta);
+                TextView txtNumCliente = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_numCliente);
+                TextView txtNomCliente = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_nomCliente);
+                TextView txtdireccion = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_direccion);
+                TextView txtNumMedidor = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_numMedidor);
+                TextView txtNotaLectura = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_notaLectura);
+                TextView txtNumerador = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_numerador);
+                TextView txtTipoCliente = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_tipoCliente);
 
-                // Set up the buttons
-                builder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        m_Text[0] = input.getText().toString();
-                        ordenLectura.setFolioCasaCerrada(Integer.parseInt(m_Text[0]));
-                        guardarLectura(0.0, clave, observacion);
-                        //Guardar lectura
-                        //Tomar fotografias si corresponde
-                        //getActivity().finish();
-                    }
-                });
-                builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                builder.show();
-            }
-            else
-            {
-                //Proceso normal de toma de lectura
-                if(validarLectura(this.txtLectura.getText().toString(), observacion))
-                {
-                    //Se valida que se ingreso lectura para claves en que esta es requerida
-                    //Se obtiene lectura ingresada
-                    //En caso de que la casilla este vacia se setea lectura = 0.0
-                    double lectura;
-                    try
-                    {
-                        lectura = Double.parseDouble(this.txtLectura.getText().toString());
-                    }
-                    catch (java.lang.NumberFormatException e)
-                    {
-                        lectura = 0.0;
-                    }
+                this.txtLectura = (EditText) this.getActivity ().findViewById (R.id.ordenLectura_lectura);
 
-                    //Se guarda intento
-                    this.bd.abrir();
-                    this.bd.insertarIntento(new Intento(0, this.ordenLectura.getNumeradores().get(numerador).getId(), lectura, 0));
+                ImageButton grabar = (ImageButton) this.getActivity ().findViewById (R.id.ordenLectura_grabar);
+                grabar.setOnClickListener (this);
 
-                    //Validar si lectura dentro de rango
-                    if(!this.ordenLectura.getNumeradores().get(numerador).fueraDeRango(lectura, observacion))
-                    {
-                        //Lectura dentro de rango o con 2 intentos con la misma lectura.
-                        //Guardar lectura
-                        //Tomar fotografias en caso de clave id != 1
-                        this.guardarLectura(lectura, clave, observacion);
-                    }
-                    else
-                    {
-                        //Lectura fuera de rango.
-                        AlertDialog.Builder dialogo = new AlertDialog.Builder(this.getContext());
-                        dialogo.setMessage("Lectura Fuera de Rango");
-                        dialogo.setMessage(this.ordenLectura.getNumeradores().get(numerador).getMensajeFueraDeRango() + " , n° intentos " + Integer.toString(this.ordenLectura.getNumeradores().get(numerador).getIntentos()));
-                        dialogo.setCancelable(true);
-                        dialogo.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                ImageButton btnNext = (ImageButton) this.getView().findViewById(R.id.ordenLectura_siguiente);
+                btnNext.setOnClickListener (this);
+
+                ImageButton btnPre = (ImageButton) this.getView().findViewById(R.id.ordenLectura_volver);
+                btnPre.setOnClickListener(this);
+
+                txtRuta.setText (this.ruta.getCodigo ());
+                txtNumCliente.setText (cliente.getNumero_cliente ());
+                txtNomCliente.setText (cliente.getNombreCompleto ());
+                txtdireccion.setText (cliente.getDireccion ());
+                if (medidor != null)
+                    txtNumMedidor.setText (medidor.getNumeroMedidor ());
+
+                //Creo Array con listado de claves de lectura
+                ArrayList<ClaveLectura> claves = this.bd.leerClaves ();
+                this.claves = (Spinner) this.getActivity ().findViewById (R.id.spinner_claves);
+                this.claves.setAdapter (new SpinAdapterClaves (this.getContext (), android.R.layout.simple_spinner_dropdown_item, claves));
+                this.claves.setOnItemSelectedListener (this);
+                //Selecciona una clave
+                ClaveLectura claveS = (ClaveLectura) this.claves.getSelectedItem ();
+                this.observaciones = (Spinner) this.getActivity ().findViewById (R.id.spinner_observaciones);
+                this.observaciones.setAdapter (new SpinAdapterObservaciones (this.getContext (), android.R.layout.simple_spinner_dropdown_item, claveS.getObservaciones ()));
+                contador = 0;
+                break;
+            // Boton Lectura Anterior
+            case R.id.ordenLectura_volver:
+                Bundle params = getArguments ();
+
+                if (this.posicion < 0){
+                    this.posicion = 0;
+                    this.ordenLectura = (OrdenLectura) ordenes.get (this.posicion);
+                }else{
+                    this.ordenLectura= (OrdenLectura) ordenes.get (this.posicion --);
+                }
+
+                Cliente clientePre = this.bd.buscarCliente (this.ordenLectura.getClienteId ());
+                Medidor medidorPre = this.bd.buscarMedidor (this.ordenLectura.getMedidorId ());
+                Instalacion instalacionPre = this.bd.buscarInstalacion (this.ordenLectura.getInstalacionId ());
+                TextView txtRutaPre = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_ruta);
+                TextView txtNumClientePre = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_numCliente);
+                TextView txtNomClientePre = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_nomCliente);
+                TextView txtdireccionPre = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_direccion);
+                TextView txtNumMedidorPre = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_numMedidor);
+                TextView txtNotaLecturaPre = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_notaLectura);
+                TextView txtNumeradorPre = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_numerador);
+                TextView txtTipoClientePre = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_tipoCliente);
+
+                this.txtLectura = (EditText) this.getActivity ().findViewById (R.id.ordenLectura_lectura);
+
+                ImageButton grabarPre = (ImageButton) this.getActivity ().findViewById (R.id.ordenLectura_grabar);
+                grabarPre.setOnClickListener (this);
+
+                ImageButton btnNextPre = (ImageButton) this.getView().findViewById(R.id.ordenLectura_siguiente);
+                btnNextPre.setOnClickListener (this);
+
+                ImageButton btnPrePre = (ImageButton) this.getView().findViewById(R.id.ordenLectura_volver);
+                btnPrePre.setOnClickListener(this);
+
+                txtRutaPre.setText (this.ruta.getCodigo ());
+                txtNumClientePre.setText (clientePre.getNumero_cliente ());
+                txtNomClientePre.setText (clientePre.getNombreCompleto ());
+                txtdireccionPre.setText (clientePre.getDireccion ());
+                if (medidorPre != null)
+                    txtNumMedidorPre.setText (medidorPre.getNumeroMedidor ());
+
+                //Creo Array con listado de claves de lectura..
+                ArrayList<ClaveLectura> clavesL = this.bd.leerClaves ();
+                this.claves = (Spinner) this.getActivity ().findViewById (R.id.spinner_claves);
+                this.claves.setAdapter (new SpinAdapterClaves (this.getContext (), android.R.layout.simple_spinner_dropdown_item, clavesL));
+                this.claves.setOnItemSelectedListener (this);
+                //Selecciona una clave...
+                ClaveLectura claveSp = (ClaveLectura) this.claves.getSelectedItem ();
+                this.observaciones = (Spinner) this.getActivity ().findViewById (R.id.spinner_observaciones);
+                this.observaciones.setAdapter (new SpinAdapterObservaciones (this.getContext (), android.R.layout.simple_spinner_dropdown_item, claveSp.getObservaciones ()));
+                contador = 0;
+                break;
+
+            case R.id.ordenLectura_grabar:
+                final ClaveLectura clave = (ClaveLectura) this.claves.getSelectedItem ();
+                final Observacion observacion = (Observacion) this.observaciones.getSelectedItem ();
+
+                //Se valida ingreso de observacion
+                if (this.validarObservacion (observacion)) {
+                    //Se valida si observacion ingresada corresponde a casa cerrada o no permite.
+                    if (this.validaCasaCerrada (observacion)) {
+                        //Solicitud de ingreso folio casa cerrada
+                        final String[] m_Text = new String[1];
+                        AlertDialog.Builder builder = new AlertDialog.Builder (this.getContext ());
+                        builder.setTitle ("Ingrese número de folio...");
+
+                        final EditText input = new EditText (this.getContext ());
+                        input.setInputType (InputType.TYPE_CLASS_NUMBER);
+                        builder.setView (input);
+
+                        // Set up the buttons
+                        builder.setPositiveButton ("Guardar", new DialogInterface.OnClickListener () {
                             @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
+                            public void onClick(DialogInterface dialog, int which) {
+                                m_Text[0] = input.getText ().toString ();
+                                ordenLectura.setFolioCasaCerrada (Integer.parseInt (m_Text[0]));
+                                guardarLectura (0.0, clave, observacion);
+                                //Guardar lectura
+                                //Tomar fotografias si corresponde
+                                //getActivity().finish();
                             }
                         });
-                        AlertDialog alerta = dialogo.create();
-                        alerta.show();
+                        builder.setNegativeButton ("Cancelar", new DialogInterface.OnClickListener () {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel ();
+                            }
+                        });
+                        builder.show ();
+                    } else {
+                        //Proceso normal de toma de lectura
+                        if (validarLectura (this.txtLectura.getText ().toString (), observacion)) {
+                            //Se valida que se ingreso lectura para claves en que esta es requerida
+                            //Se obtiene lectura ingresada
+                            //En caso de que la casilla este vacia se setea lectura = 0.0
+                            double lectura;
+                            try {
+                                lectura = Double.parseDouble (this.txtLectura.getText ().toString ());
+                            } catch (java.lang.NumberFormatException e) {
+                                lectura = 0.0;
+                            }
+
+                            //Se guarda intento
+                            this.bd.abrir ();
+                            this.bd.insertarIntento (new Intento (0, this.ordenLectura.getNumeradores ().get (numerador).getId (), lectura, 0));
+
+                            //Validar si lectura dentro de rango
+                            if (!this.ordenLectura.getNumeradores ().get (numerador).fueraDeRango (lectura, observacion)) {
+                                //Lectura dentro de rango o con 2 intentos con la misma lectura.
+                                //Guardar lectura
+                                //Tomar fotografias en caso de clave id != 1
+                                this.guardarLectura (lectura, clave, observacion);
+                            } else {
+                                //Lectura fuera de rango.
+                                AlertDialog.Builder dialogo = new AlertDialog.Builder (this.getContext ());
+                                dialogo.setMessage ("Lectura Fuera de Rango");
+                                dialogo.setMessage (this.ordenLectura.getNumeradores ().get (numerador).getMensajeFueraDeRango () + " , n° intentos " + Integer.toString (this.ordenLectura.getNumeradores ().get (numerador).getIntentos ()));
+                                dialogo.setCancelable (true);
+                                dialogo.setPositiveButton ("Aceptar", new DialogInterface.OnClickListener () {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.cancel ();
+                                    }
+                                });
+                                AlertDialog alerta = dialogo.create ();
+                                alerta.show ();
+                            }
+                        } else {
+                            AlertDialog.Builder dialogo = new AlertDialog.Builder (this.getContext ());
+                            dialogo.setMessage ("Lectura invalida");
+                            dialogo.setMessage ("Se debe ingresar una lectura");
+                            dialogo.setCancelable (true);
+                            dialogo.setPositiveButton ("Aceptar", new DialogInterface.OnClickListener () {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel ();
+                                }
+                            });
+                            AlertDialog alerta = dialogo.create ();
+                            alerta.show ();
+                        }
                     }
-                }
-                else
-                {
-                    AlertDialog.Builder dialogo = new AlertDialog.Builder(this.getContext());
-                    dialogo.setMessage("Lectura invalida");
-                    dialogo.setMessage("Se debe ingresar una lectura");
-                    dialogo.setCancelable(true);
-                    dialogo.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                } else {
+                    //TODO: Quizas esto se podria realizar en una funcion
+                    AlertDialog.Builder dialogo = new AlertDialog.Builder (this.getContext ());
+                    dialogo.setMessage ("Observación invalida");
+                    dialogo.setMessage ("Se debe seleccionar una observación");
+                    dialogo.setCancelable (true);
+                    dialogo.setPositiveButton ("Aceptar", new DialogInterface.OnClickListener () {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.cancel();
+                            dialogInterface.cancel ();
                         }
                     });
-                    AlertDialog alerta = dialogo.create();
-                    alerta.show();
+                    AlertDialog alerta = dialogo.create ();
+                    alerta.show ();
                 }
-            }
-        }
-        else
-        {
-            //TODO: Quizas esto se podria realizar en una funcion
-            AlertDialog.Builder dialogo = new AlertDialog.Builder(this.getContext());
-            dialogo.setMessage("Observación invalida");
-            dialogo.setMessage("Se debe seleccionar una observación");
-            dialogo.setCancelable(true);
-            dialogo.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.cancel();
-                }
-            });
-            AlertDialog alerta = dialogo.create();
-            alerta.show();
-        }
 
-        this.txtLectura.setText("");
+
+                this.txtLectura.setText ("");
+                break;
+        }
     }
+
 
     /**
      * Valida si observacion ingresada corresponde a una de casa cerrada o no permite
@@ -259,6 +370,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
             return false;
         }
         }
+
 
     /**
      * Valida que se ingreso lectura para claves en que es requerida.
@@ -285,6 +397,14 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
     private boolean validarObservacion(Observacion observacion) {
         return true;
         //return observacion.getId() != 0;
+    }
+
+    public void siguiente(){
+       pantalla = 2;
+    }
+
+    public void volver(){
+        pantalla= 0;
     }
 
     /**
@@ -346,6 +466,11 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
                     args.putSerializable ("claveLectura", clave);
                     args.putSerializable ("observacion", observacion);
                     args.putSerializable ("detalle", this.ordenLectura.getNumeradores ().get (numerador));
+                    args.putSerializable ("ruta", this.ruta);
+                    args.putSerializable ("posicion", this.posicion ++);
+                    args.putSerializable ("tipoLetura", 1);
+                    String orden = args.getString ("ordendireccion" );
+                    args.putSerializable ("ordendireccion", orden);
 
                     fragment.setArguments (args);
 
@@ -358,7 +483,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
                         this.txtLectura.setText ("");
                     }
                     else{
-                        this.getActivity().onBackPressed();
+                        //this.getActivity().onBackPressed();
                     }
 
 
@@ -368,6 +493,56 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
             this.ordenLectura.setEstadoLecturaId(4);
             this.bd.abrir();
             this.bd.actualizarOrden(this.ordenLectura);
+            Bundle args = getArguments ();
+
+            String orden = args.getString ("ordendireccion" );
+
+            this.bd.abrir ();
+            this.ordenes = this.bd.leerOrdenes(this.ruta.getId(), 1, orden);
+            this.ordenLectura= (OrdenLectura) ordenes.get (this.posicion ++);
+            Cliente cliente = this.bd.buscarCliente (this.ordenLectura.getClienteId ());
+            Medidor medidor = this.bd.buscarMedidor (this.ordenLectura.getMedidorId ());
+            Instalacion instalacion = this.bd.buscarInstalacion (this.ordenLectura.getInstalacionId ());
+
+            TextView txtRuta = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_ruta);
+            TextView txtNumCliente = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_numCliente);
+            TextView txtNomCliente = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_nomCliente);
+            TextView txtdireccion = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_direccion);
+            TextView txtNumMedidor = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_numMedidor);
+            TextView txtNotaLectura = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_notaLectura);
+            TextView txtNumerador = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_numerador);
+            TextView txtTipoCliente = (TextView) this.getActivity ().findViewById (R.id.ordenLectura_tipoCliente);
+
+            this.txtLectura = (EditText) this.getActivity ().findViewById (R.id.ordenLectura_lectura);
+
+            ImageButton grabar = (ImageButton) this.getActivity ().findViewById (R.id.ordenLectura_grabar);
+            grabar.setOnClickListener (this);
+
+            ImageButton btnNext = (ImageButton) this.getView().findViewById(R.id.ordenLectura_siguiente);
+            btnNext.setOnClickListener (this);
+
+            ImageButton btnPre = (ImageButton) this.getView().findViewById(R.id.ordenLectura_volver);
+            btnPre.setOnClickListener(this);
+
+            txtRuta.setText (ruta.getCodigo ());
+            txtNumCliente.setText (cliente.getNumero_cliente ());
+            txtNomCliente.setText (cliente.getNombreCompleto ());
+            txtdireccion.setText (cliente.getDireccion ());
+            if (medidor != null)
+                txtNumMedidor.setText (medidor.getNumeroMedidor ());
+
+            // txtNumInstalacion.setText(instalacion.getCodigo());
+
+            //Creo Array con listado de claves de lectura
+            ArrayList<ClaveLectura> claves = this.bd.leerClaves ();
+            this.claves = (Spinner) this.getActivity ().findViewById (R.id.spinner_claves);
+            this.claves.setAdapter (new SpinAdapterClaves (this.getContext (), android.R.layout.simple_spinner_dropdown_item, claves));
+            this.claves.setOnItemSelectedListener (this);
+            //Selecciona una clabe
+            ClaveLectura claveSpiner = (ClaveLectura) this.claves.getSelectedItem ();
+            this.observaciones = (Spinner) this.getActivity ().findViewById (R.id.spinner_observaciones);
+            this.observaciones.setAdapter (new SpinAdapterObservaciones (this.getContext (), android.R.layout.simple_spinner_dropdown_item, clave.getObservaciones ()));
+            contador = 0;
         }
     }
 

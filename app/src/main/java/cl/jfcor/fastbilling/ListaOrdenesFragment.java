@@ -3,6 +3,7 @@ package cl.jfcor.fastbilling;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,7 @@ public class ListaOrdenesFragment extends Fragment implements AdapterView.OnItem
 	{
         super.onActivityCreated(savedInstanceState);
 
-        //Obtener argumentos
+        //Obtener parametros
         Bundle args = getArguments();
         this.ruta = (Ruta) args.getSerializable("ruta");
         this.usuario = (Usuario) args.getSerializable("usuario");
@@ -103,6 +104,8 @@ public class ListaOrdenesFragment extends Fragment implements AdapterView.OnItem
 		
 	}
 
+
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
@@ -114,12 +117,18 @@ public class ListaOrdenesFragment extends Fragment implements AdapterView.OnItem
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
-
+        System.out.print ("posicion: /n");
+        System.out.print (position);
         //Parametros que se pasan al fragment
         Bundle args = new Bundle();
         args.putSerializable("orden", ordenes.get(position));
-        args.putSerializable("ruta",ruta.getCodigo());
+        //args.putSerializable("ruta",ruta.getCodigo());
         args.putSerializable("usuario", usuario);
+        args.putSerializable("posicion", position);
+        args.putSerializable("tipolectura", this.tipoLectura);
+        args.putSerializable("ruta", this.ruta);
+        args.putSerializable ("ordendireccion", getOrderBy ());
+
 
         fragment.setArguments(args);
 
