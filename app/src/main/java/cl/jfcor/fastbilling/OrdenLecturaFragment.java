@@ -3,6 +3,7 @@ package cl.jfcor.fastbilling;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.journeyapps.barcodescanner.CaptureActivity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,7 +57,10 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
     private static final String TAG = "Clientes Pendientes";
     private static int contador;
     public static boolean fueraRango;
+    public static boolean observacionFotografia = false;
     private int pantalla;
+
+
 
     //TODO: Mover funciones de impresion a otra vista.
     //TODO: Revisar intent result en fragment.
@@ -121,7 +127,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
         this.claves = (Spinner) this.getActivity ().findViewById (R.id.spinner_claves);
         this.claves.setAdapter (new SpinAdapterClaves (this.getContext (), android.R.layout.simple_spinner_dropdown_item, claves));
         this.claves.setOnItemSelectedListener (this);
-        //Selecciona una clabe
+        //Selecciona una clave
         ClaveLectura clave = (ClaveLectura) this.claves.getSelectedItem ();
         this.observaciones = (Spinner) this.getActivity ().findViewById (R.id.spinner_observaciones);
         this.observaciones.setAdapter (new SpinAdapterObservaciones (this.getContext (), android.R.layout.simple_spinner_dropdown_item, clave.getObservaciones ()));
@@ -253,7 +259,12 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
                 if (this.validarObservacion (observacion)) {
                     //Se valida si observacion ingresada corresponde a casa cerrada o no permite.
                     if (this.validaCasaCerrada (observacion)) {
+                        Intent intent = new Intent(view.getContext(), CaptureActivity.class);
+                        intent.setAction("com.google.zxing.client.android.SCAN");
+                        intent.putExtra("SAVE_HISTORY", false);
+                        startActivityForResult(intent, 0);
                         //Solicitud de ingreso folio casa cerrada
+                        /**
                         final String[] m_Text = new String[1];
                         AlertDialog.Builder builder = new AlertDialog.Builder (this.getContext ());
                         builder.setTitle ("Ingrese número de folio...");
@@ -280,7 +291,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
                                 dialog.cancel ();
                             }
                         });
-                        builder.show ();
+                        builder.show ();**/
                     } else {
                         //Proceso normal de toma de lectura
                         if (validarLectura (this.txtLectura.getText ().toString (), observacion)) {
@@ -369,7 +380,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
         }else{
             return false;
         }
-        }
+    }
 
 
     /**
@@ -389,14 +400,30 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
     }
 
     /**
+     * Valida que se ingreso lectura para claves en que es requerida.
+     *
+     * @param v Valor del campo de lectura
+     * @param observacion Observación de lectura seleccionada en spinner
+     * @return boolean
+     */
+
+    private boolean validarFotografiaRequerida(Observacion observacion) {
+        if (observacion.isFoto ()) {
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+    /**
      * Valida que se haya ingresado observacion.
      *
      * @param observacion Observacion seleccionada en spinner
-     * @return bollean
+     * @return boolean
      */
     private boolean validarObservacion(Observacion observacion) {
         return true;
-        //return observacion.getId() != 0;
     }
 
     public void siguiente(){
@@ -450,7 +477,8 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
                 // se toma fotografia
 
                 System.out.println ("Fuera de Rago:.... " + fueraRango);
-                if(fueraRango){
+                System.out.print ("Valida foto" + this.validarFotografiaRequerida (observacion));
+                if(fueraRango || this.validarFotografiaRequerida (observacion)){
                     Toast.makeText (this.getContext (), "Foto", Toast.LENGTH_SHORT).show ();
                     Fragment fragment = null;
                     try {
@@ -538,7 +566,7 @@ public class OrdenLecturaFragment extends Fragment implements View.OnClickListen
             this.claves = (Spinner) this.getActivity ().findViewById (R.id.spinner_claves);
             this.claves.setAdapter (new SpinAdapterClaves (this.getContext (), android.R.layout.simple_spinner_dropdown_item, claves));
             this.claves.setOnItemSelectedListener (this);
-            //Selecciona una clabe
+            //Selecciona una clave
             ClaveLectura claveSpiner = (ClaveLectura) this.claves.getSelectedItem ();
             this.observaciones = (Spinner) this.getActivity ().findViewById (R.id.spinner_observaciones);
             this.observaciones.setAdapter (new SpinAdapterObservaciones (this.getContext (), android.R.layout.simple_spinner_dropdown_item, clave.getObservaciones ()));

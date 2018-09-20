@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.zxing.client.android.CaptureActivity;
 
 import java.util.ArrayList;
 import java.util.Date;

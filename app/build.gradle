@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "cl.jfcor.fastbilling"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 41
-        versionName "0.41"
+        versionCode 42
+        versionName "0.42"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -35,6 +35,7 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.google.android.gms:play-services-maps:9.0.1'
-    compile 'com.tarun0.zxing-standalone:zxing-standalone:1.0.0'
+    compile 'com.journeyapps:zxing-android-embedded:3.6.0'
+
     //testCompile 'junit:junit:4.12'
 }

@@ -8,6 +8,7 @@ import java.util.Date;
 
 /**
  * Created by brayan on 30-03-17.
+ * Modify by Fabián Hidalgo 11-09-2018
  */
 
 public class DetalleOrdenLectura implements Serializable
@@ -31,13 +32,33 @@ public class DetalleOrdenLectura implements Serializable
     private int intentos = 0;
 	private ArrayList<Fotografia> fotografias;
 	private String mensajeFueraDeRango = "";
-	
-	public DetalleOrdenLectura(int id, int ordenLecturaId, int numeradorId, double lecturaAnterior,
+	private Long hora_lector;
+    private Long hora_medidor;
+    private double energia_reactiva;
+    private double energia_suministrada;
+    private Long fecha_energia_suministrada;
+    private Long hora_energia_suministrada;
+    private int reset_energia_suministrada;
+    private double energia_punta;
+    private Long fecha_energia_punta;
+    private Long hora_energia_punta;
+    private int reset_energia_punta;
+    private double energia_inyectada;
+
+    public DetalleOrdenLectura(int id, int ordenLecturaId, int numeradorId, double lecturaAnterior,
 							   double lecturaPromedio, double lecturaActual, double rangoSuperior,
 							   double rangoInferior, long fechaEjecucion, int claveLecturaId, int observacionId,
 							   String claveLecturaAnterior, String claveLecturaAnterior2, String claveLecturaAnterior3,
                                double m3Acumulados, ArrayList<Intento> intentos,
-							   ArrayList<Fotografia> fotografias)
+							   ArrayList<Fotografia> fotografias,
+                               long hora_lector, long hora_medidor, double energia_reactiva, double energia_suministrada,
+                               long fecha_energia_suministrada, long hora_energia_suministrada, int reset_energia_suministrada,
+
+
+
+
+
+                               double energia_punta,long fecha_energia_punta,long hora_energia_punta, int reset_energia_punta, double energia_inyectada )
 	{
 		this.id = id;
 		this.ordenLecturaId = ordenLecturaId;
@@ -56,6 +77,18 @@ public class DetalleOrdenLectura implements Serializable
 		this.m3Acumulados = m3Acumulados;
 		this.listaIntentos = intentos;
 		this.fotografias = fotografias;
+		this.hora_lector = hora_lector;
+		this.hora_medidor = hora_medidor;
+		this.energia_reactiva = energia_reactiva;
+		this.energia_suministrada = energia_suministrada;
+		this.fecha_energia_suministrada = fecha_energia_suministrada;
+		this.hora_energia_suministrada = hora_energia_suministrada;
+		this.reset_energia_suministrada = reset_energia_suministrada;
+		this.energia_punta = energia_punta;
+		this.fecha_energia_punta = fecha_energia_punta;
+		this.hora_energia_punta = hora_energia_punta;
+		this.reset_energia_punta = reset_energia_punta;
+		this.energia_inyectada = energia_inyectada;
 	}
 
     public DetalleOrdenLectura(int id, int ordenLecturaId, int numeradorId, double lecturaAnterior,

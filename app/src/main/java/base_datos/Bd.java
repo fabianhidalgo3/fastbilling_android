@@ -324,6 +324,13 @@ public class Bd extends SQLiteOpenHelper
                               "nombre TEXT," +
                               "usuario INTEGER)";
 
+        String numerador = "CREATE TABLE numerador(" +
+                              _ID + " INTEGER PRIMARY KEY," +
+                              "codigo TEXT," +
+                              "nombre TEXT," +
+                              "secuencia INTEGER," +
+                              "descripcion TEXT)";
+
 
 
 
@@ -1725,6 +1732,18 @@ public class Bd extends SQLiteOpenHelper
         int claveLecturaAnteriorId2 = c.getColumnIndex("clave_lectura_anterior_2");
         int claveLecturaAnteriorId3 = c.getColumnIndex("clave_lectura_anterior_3");
         int m3Acumulados = c.getColumnIndex("m3_acumulados");
+        int hora_lector = c.getColumnIndex ("hora_lector");
+        int hora_medidor = c.getColumnIndex ("hora_medidor");
+        int energia_reactiva = c.getColumnIndex ("energia_reactiva");
+        int energia_suministrada =  c.getColumnIndex ("energia_suministrada");
+        int fecha_energia_suministrada = c.getColumnIndex ("fecha_energia_suministrada");
+        int hora_energia_suministrada = c.getColumnIndex ("hora_energia_suministrada");
+        int reset_energia_suministrada= c.getColumnIndex ("reset_energia_suministrada");
+        int energia_punta = c.getColumnIndex ("energia_punta");
+        int fecha_energia_punta = c.getColumnIndex ("fecha_energia_punta");
+        int hora_energia_punta = c.getColumnIndex ("hora_energia_punta");
+        int reset_energia_punta = c.getColumnIndex ("reset_energia_punta");
+        int energia_inyectada = c.getColumnIndex ("energia_inyectada");
 
         while(c.moveToNext())
         {
@@ -1735,7 +1754,10 @@ public class Bd extends SQLiteOpenHelper
                                                   c.getInt(claveLecturaId), c.getInt(observacionId),
                                                   c.getString (claveLecturaAnteriorId), c.getString (claveLecturaAnteriorId2),
                                                   c.getString (claveLecturaAnteriorId3),  c.getDouble(m3Acumulados),
-                                                  this.verIntentos(c.getInt(id)), this.verFotografias(c.getInt(id))));
+                                                  this.verIntentos(c.getInt(id)), this.verFotografias(c.getInt(id)), c.getLong (hora_lector), c.getLong (hora_medidor),
+                                                  c.getDouble (energia_reactiva), c.getDouble (energia_suministrada),c.getLong (fecha_energia_suministrada),
+                    c.getLong (hora_energia_suministrada),c.getInt (reset_energia_suministrada), c.getDouble (energia_punta), c.getLong (fecha_energia_punta),
+                    c.getLong (hora_energia_punta), c.getInt (reset_energia_punta), c.getDouble (energia_inyectada)));
         }
 
         c.close();
